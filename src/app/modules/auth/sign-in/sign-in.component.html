@@ -1,0 +1,98 @@
+<div class="flex min-w-0 flex-auto flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
+    <div
+        class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow md:flex md:h-full md:w-1/2 md:items-center md:justify-end md:rounded-none md:p-16 md:shadow-none">
+        <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
+            <!-- Logo -->
+            <div class="w-12">
+                <img src="images/logo/logoGB.jpeg" />
+            </div>
+
+            <!-- Title -->
+            <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
+                Inicio de sesión
+            </div>
+            <div class="mt-0.5 flex items-baseline font-medium">
+                <div>¿No tienes una cuenta?</div>
+                <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-up']">Regístrate
+                </a>
+            </div>
+
+            <!-- Alert -->
+            <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="'info'">
+                Bienvenido(a) al <strong>Portal del Cliente</strong>.
+                Consulta tu <strong>saldo</strong> y <strong>rendimientos mensuales</strong>.
+                La activación se realiza con tu ejecutivo asignado.
+            </fuse-alert>
+
+
+            <!-- Alert -->
+            @if (showAlert) {
+            <fuse-alert class="mt-8" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+                [@shake]="alert.type === 'error'">
+                {{ alert.message }}
+            </fuse-alert>
+            }
+
+            <!-- Sign in form -->
+            <form class="mt-8" [formGroup]="signInForm" #signInNgForm="ngForm">
+                <!-- Email field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Correo electrónico</mat-label>
+                    <input id="email" matInput [formControlName]="'email'" />
+                    @if (signInForm.get('email').hasError('required')) {
+                    <mat-error> El correo es requerido</mat-error>
+                    }
+                    @if (signInForm.get('email').hasError('email')) {
+                    <mat-error>
+                        Por favor ingrese una dirección de correo electrónico válida
+                    </mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Password field -->
+                <mat-form-field class="w-full">
+                    <mat-label>Contraseña</mat-label>
+                    <input id="password" matInput type="password" [formControlName]="'password'" #passwordField />
+                    <button mat-icon-button type="button" (click)="
+                            passwordField.type === 'password'
+                                ? (passwordField.type = 'text')
+                                : (passwordField.type = 'password')
+                        " matSuffix>
+                        @if (passwordField.type === 'password') {
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        }
+                        @if (passwordField.type === 'text') {
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                        }
+                    </button>
+                    <mat-error> Contraseña es requerida</mat-error>
+                </mat-form-field>
+
+                <!-- Actions -->
+                <div class="mt-1.5 inline-flex w-full items-center justify-between">
+                    <mat-checkbox class="-ml-2" [color]="'primary'" [formControlName]="'rememberMe'">
+                        Recordarme
+                    </mat-checkbox>
+                    <a class="text-md font-medium text-primary-500 hover:underline"
+                        [routerLink]="['/forgot-password']">Olvidate su contraseña?
+                    </a>
+                </div>
+
+                <!-- Submit button -->
+                <button class="fuse-mat-button-large mt-6 w-full" mat-flat-button [color]="'primary'"
+                    [disabled]="signInForm.disabled" (click)="signIn()">
+                    @if (!signInForm.disabled) {
+                    <span> Iniciar sesión </span>
+                    }
+                    @if (signInForm.disabled) {
+                    <mat-progress-spinner [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+                    }
+                </button>
+
+
+            </form>
+        </div>
+    </div>
+    <app-portada-bienvenida
+        class="relative hidden h-full w-1/2 flex-auto items-center justify-center overflow-hidden bg-gray-800 p-16 dark:border-l md:flex lg:px-28" />
+</div>
