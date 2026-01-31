@@ -1,0 +1,81 @@
+{
+  "uiHints": {
+    "state": "HAS_INVESTMENT",
+    "emptyState": {
+      "title": "Tu cuenta está lista",
+      "message": "Aún no tienes inversiones activas. Contacta a tu ejecutivo para activar rendimientos."
+    }
+  },
+  "kpis": {
+    "asOf": "2026-12-31T23:59:59.000Z",
+    "investedCapital": 8000,
+    "currentBalance": 10680,
+    "totalProfit": 2680,
+    "monthlyRate": 0.067875,
+    "profitThisMonth": 543,
+    "sinceStartReturnPct": 0.335
+  },
+  "chart": {
+    "title": "Evolución de la cuenta",
+    "unit": "currency",
+    "granularity": "month",
+    "series": [
+      {
+        "key": "balance",
+        "label": "Saldo por mes",
+        "data": [
+          { "period": "2026-01", "value": 5271 },
+          { "period": "2026-02", "value": 5571 },
+          { "period": "2026-03", "value": 7034 },
+          { "period": "2026-04", "value": 7487 },
+          { "period": "2026-05", "value": 7848 },
+          { "period": "2026-06", "value": 8892 },
+          { "period": "2026-07", "value": 8937 },
+          { "period": "2026-08", "value": 9277 },
+          { "period": "2026-09", "value": 10550 },
+          { "period": "2026-10", "value": 11022 },
+          { "period": "2026-11", "value": 12137 },
+          { "period": "2026-12", "value": 10680 }
+
+        ]
+      },
+      {
+        "key": "investedCapital",
+        "label": "Capital invertido",
+        "data": [
+          { "period": "2026-01", "value": 5000 },
+          { "period": "2026-02", "value": 5000 },
+          { "period": "2026-03", "value": 6000 },
+          { "period": "2026-04", "value": 6000 },
+          { "period": "2026-05", "value": 6000 },
+          { "period": "2026-06", "value": 7000 },
+          { "period": "2026-07", "value": 7000 },
+          { "period": "2026-08", "value": 7000 },
+          { "period": "2026-09", "value": 8250 },
+          { "period": "2026-10", "value": 8250 },
+          { "period": "2026-11", "value": 8000 },
+          { "period": "2026-12", "value": 8000 }
+
+        ]
+      },
+      {
+        "key": "profit",
+        "label": "Ganancia del mes",
+        "data": [
+          { "period": "2026-01", "value": 271 },
+          { "period": "2026-02", "value": 300 },
+          { "period": "2026-03", "value": 463 },
+          { "period": "2026-04", "value": 453 },
+          { "period": "2026-05", "value": 361 },
+          { "period": "2026-06", "value": 1044 },
+          { "period": "2026-07", "value": 45 },
+          { "period": "2026-08", "value": 340 },
+          { "period": "2026-09", "value": 1273 },
+          { "period": "2026-10", "value": 472 },
+          { "period": "2026-11", "value": 1115 },
+          { "period": "2026-12", "value": 543 }
+        ]
+      }
+    ]
+  }
+}

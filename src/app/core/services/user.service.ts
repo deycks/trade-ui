@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { User } from 'app/core/user/user.types';
+import { User } from 'app/core/interfaces/user.interface';
 import { environment } from 'environments/environment';
 import { map, Observable, ReplaySubject, tap } from 'rxjs';
 
@@ -36,7 +36,7 @@ export class UserService {
      */
     get(): Observable<User> {
         return this._httpClient
-            .get<User>(`${environment.apiUrl}/client/profile`)
+            .get<User>(`${environment.apiUrl}/auth/profile`)
             .pipe(
                 tap((user) => {
                     this._user.next(user);
@@ -51,7 +51,7 @@ export class UserService {
      */
     update(user: User): Observable<any> {
         return this._httpClient
-            .patch<User>(`${environment.apiUrl}/client/profile`, { user })
+            .patch<User>(`${environment.apiUrl}/auth/profile`, { user })
             .pipe(
                 map((response) => {
                     this._user.next(response);

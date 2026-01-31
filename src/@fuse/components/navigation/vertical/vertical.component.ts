@@ -38,12 +38,7 @@ import {
     FuseVerticalNavigationMode,
     FuseVerticalNavigationPosition,
 } from '@fuse/components/navigation/navigation.types';
-import { FuseVerticalNavigationAsideItemComponent } from '@fuse/components/navigation/vertical/components/aside/aside.component';
 import { FuseVerticalNavigationBasicItemComponent } from '@fuse/components/navigation/vertical/components/basic/basic.component';
-import { FuseVerticalNavigationCollapsableItemComponent } from '@fuse/components/navigation/vertical/components/collapsable/collapsable.component';
-import { FuseVerticalNavigationDividerItemComponent } from '@fuse/components/navigation/vertical/components/divider/divider.component';
-import { FuseVerticalNavigationGroupItemComponent } from '@fuse/components/navigation/vertical/components/group/group.component';
-import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navigation/vertical/components/spacer/spacer.component';
 import { FuseScrollbarDirective } from '@fuse/directives/scrollbar/scrollbar.directive';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import {
@@ -64,15 +59,7 @@ import {
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'fuseVerticalNavigation',
-    imports: [
-        FuseScrollbarDirective,
-        FuseVerticalNavigationAsideItemComponent,
-        FuseVerticalNavigationBasicItemComponent,
-        FuseVerticalNavigationCollapsableItemComponent,
-        FuseVerticalNavigationDividerItemComponent,
-        FuseVerticalNavigationGroupItemComponent,
-        FuseVerticalNavigationSpacerItemComponent,
-    ],
+    imports: [FuseScrollbarDirective, FuseVerticalNavigationBasicItemComponent],
 })
 export class FuseVerticalNavigationComponent
     implements OnChanges, OnInit, AfterViewInit, OnDestroy

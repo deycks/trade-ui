@@ -3,6 +3,9 @@ import { initialDataResolver } from 'app/app.resolvers';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
+import { RoleGuard } from './core/auth/guards/rol.guard';
+import { RoleRedirectGuard } from './core/auth/guards/roleRedirect.guard';
+import { EmptyRouteComponent } from './emptyRoute.component';
 
 export const appRoutes: Route[] = [
     { path: '', pathMatch: 'full', redirectTo: 'inicio' },
@@ -86,10 +89,68 @@ export const appRoutes: Route[] = [
         resolve: {
             initialData: initialDataResolver,
         },
+        // dentro de tus "Admin routes" (las protegidas)
         children: [
             {
                 path: 'inicio',
-                loadChildren: () => import('app/modules/client/client.routes'),
+                canActivate: [RoleRedirectGuard],
+                component: EmptyRouteComponent,
+            },
+            {
+                path: 'dashboard',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['CLIENT', 'PROSPECT'] },
+                loadChildren: () =>
+                    import(
+                        'app/modules/client/dashboard-client/dashboard-client.routes'
+                    ),
+            },
+            {
+                path: 'movimientos',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['CLIENT', 'PROSPECT'] },
+                loadChildren: () =>
+                    import(
+                        'app/modules/client/transactions-client/transactions-client.routes'
+                    ),
+            },
+            {
+                path: 'perfil',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['CLIENT', 'PROSPECT'] },
+                loadChildren: () =>
+                    import('app/modules/client/profile/profile.routes'),
+            },
+            {
+                path: 'admin',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['ADMIN'] },
+                loadChildren: () =>
+                    import(
+                        'app/modules/admin/dashboard-admin/dashboard-admin.routes'
+                    ),
+            },
+            {
+                path: 'clientes',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['ADMIN'] },
+                loadChildren: () =>
+                    import(
+                        'app/modules/admin/client-admin/client-admin.routes'
+                    ),
+            },
+            {
+                path: 'logs',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['ADMIN'] },
+                loadChildren: () =>
+                    import('app/modules/admin/logs/logs.routes'),
             },
         ],
     },

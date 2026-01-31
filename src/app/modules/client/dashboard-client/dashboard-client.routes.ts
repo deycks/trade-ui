@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 import { DashboardClientService } from 'app/services/dashboard-client.service';
-import { ClientComponent } from './client.component';
+import { DashboardClientComponent } from './dashboard-client.component';
 
 export default [
     {
         path: '',
-        component: ClientComponent,
+        component: DashboardClientComponent,
         resolve: {
             data: () => inject(DashboardClientService).getData(),
         },

@@ -1,6 +1,7 @@
-import { DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     OnDestroy,
     OnInit,
@@ -12,13 +13,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { DashboardClientService } from 'app/services/dashboard-client.service';
+import {
+    ChartSeries,
+    ResponseDashboardClient,
+} from 'app/core/interfaces/dashboardClient.interface';
+import { DataPoint } from 'app/core/interfaces/dataChartSeriesDashboard.interface';
+import { ClientService } from 'app/core/services/client.service';
+import { LoadingComponent } from 'app/layout/common/loading/loading.component';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    selector: 'app-client',
-    templateUrl: './client.component.html',
+    selector: 'app-dashboard-client',
+    templateUrl: './dashboard-client.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
@@ -28,10 +35,11 @@ import { Subject, takeUntil } from 'rxjs';
         MatButtonToggleModule,
         NgApexchartsModule,
         MatTooltipModule,
-        DecimalPipe,
+        LoadingComponent,
+        CommonModule,
     ],
 })
-export class ClientComponent implements OnInit, OnDestroy {
+export class DashboardClientComponent implements OnInit, OnDestroy {
     chartVisitors: ApexOptions;
     chartConversions: ApexOptions;
     chartImpressions: ApexOptions;
@@ -42,6 +50,9 @@ export class ClientComponent implements OnInit, OnDestroy {
     chartAge: ApexOptions;
     chartLanguage: ApexOptions;
     data: any;
+    dataDashboard?: ResponseDashboardClient;
+    isLoading = true;
+    selectedYear!: string;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -49,9 +60,25 @@ export class ClientComponent implements OnInit, OnDestroy {
      * Constructor
      */
     constructor(
-        private _analyticsService: DashboardClientService,
-        private _router: Router
+        private _clientService: ClientService,
+        private _router: Router,
+        private _cdr: ChangeDetectorRef
     ) {}
+
+    // Helpers para el template
+    get showEmptyState(): boolean {
+        return (
+            !!this.dataDashboard &&
+            this.dataDashboard.uiHints?.state === 'NO_INVESTMENT'
+        );
+    }
+
+    get showDashboard(): boolean {
+        return (
+            !!this.dataDashboard &&
+            this.dataDashboard.uiHints?.state === 'HAS_INVESTMENT'
+        );
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -61,31 +88,42 @@ export class ClientComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Get the data
-        this._analyticsService.data$
+        // Obtener datos del dashboard desde el servicio ClientService
+        this._clientService
+            .getDashboardData()
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((data) => {
-                // Store the data
-                console.log(data);
-                this.data = data;
+            .subscribe({
+                next: (resp) => {
+                    // getDashboardData devuelve un array; tomar el primer elemento si existe
+                    this.dataDashboard = Array.isArray(resp)
+                        ? (resp[0] ?? resp)
+                        : resp;
+                    // Prepara los datos para los charts si corresponde
+                    this._prepareChartData();
+                    this.isLoading = false;
 
-                // Prepare the chart data
-                this._prepareChartData();
-            });
-
-        // Attach SVG fill fixer to all ApexCharts
-        window['Apex'] = {
-            chart: {
-                events: {
-                    mounted: (chart: any, options?: any): void => {
-                        this._fixSvgFill(chart.el);
-                    },
-                    updated: (chart: any, options?: any): void => {
-                        this._fixSvgFill(chart.el);
-                    },
+                    // Forzar check dado ChangeDetectionStrategy.OnPush
+                    this._cdr.markForCheck();
                 },
-            },
-        };
+                error: (err) => {
+                    console.error('Error cargando datos del dashboard:', err);
+                    this.isLoading = false;
+                    this._cdr.markForCheck();
+                },
+            });
+        // Attach SVG fill fixer to all ApexCharts
+        // window['Apex'] = {
+        //     chart: {
+        //         events: {
+        //             mounted: (chart: any, options?: any): void => {
+        //                 this._fixSvgFill(chart.el);
+        //             },
+        //             updated: (chart: any, options?: any): void => {
+        //                 this._fixSvgFill(chart.el);
+        //             },
+        //         },
+        //     },
+        // };
     }
 
     /**
@@ -149,18 +187,20 @@ export class ClientComponent implements OnInit, OnDestroy {
      * @private
      */
     private _prepareChartData(): void {
-        // Visitors
-        this.chartVisitors = {
+        const _key: string = 'balance';
+        const balanceAndInvestedCapital = this.dataDashboard.chart.series.slice(
+            0,
+            2
+        );
+
+        // Visitors vs Page Views
+        this.chartVisitorsVsPageViews = {
             chart: {
                 animations: {
-                    speed: 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
+                    enabled: false,
                 },
                 fontFamily: 'inherit',
                 foreColor: 'inherit',
-                width: '100%',
                 height: '100%',
                 type: 'area',
                 toolbar: {
@@ -170,31 +210,28 @@ export class ClientComponent implements OnInit, OnDestroy {
                     enabled: false,
                 },
             },
-            colors: ['#818CF8'],
+            colors: ['#64748B', '#94A3B8'],
             dataLabels: {
                 enabled: false,
             },
             fill: {
-                colors: ['#312E81'],
+                colors: ['#64748B', '#94A3B8'],
+                opacity: 0.5,
             },
             grid: {
-                show: true,
-                borderColor: '#334155',
+                show: false,
                 padding: {
-                    top: 10,
                     bottom: -40,
                     left: 0,
                     right: 0,
                 },
-                position: 'back',
-                xaxis: {
-                    lines: {
-                        show: true,
-                    },
-                },
             },
-            series: this.data.visitors.series,
+            legend: {
+                show: false,
+            },
+            series: this._mapChartSeriesToApexSeries(balanceAndInvestedCapital),
             stroke: {
+                curve: 'smooth',
                 width: 2,
             },
             tooltip: {
@@ -203,50 +240,38 @@ export class ClientComponent implements OnInit, OnDestroy {
                 x: {
                     format: 'MMM dd, yyyy',
                 },
-                y: {
-                    formatter: (value: number): string => `${value}`,
-                },
             },
             xaxis: {
                 axisBorder: {
                     show: false,
                 },
-                axisTicks: {
-                    show: false,
-                },
-                crosshairs: {
-                    stroke: {
-                        color: '#475569',
-                        dashArray: 0,
-                        width: 2,
-                    },
-                },
                 labels: {
                     offsetY: -20,
+                    rotate: 0,
                     style: {
-                        colors: '#CBD5E1',
+                        colors: 'var(--fuse-text-secondary)',
                     },
                 },
-                tickAmount: 20,
+                tickAmount: 3,
                 tooltip: {
                     enabled: false,
                 },
                 type: 'datetime',
             },
             yaxis: {
-                axisTicks: {
-                    show: false,
+                labels: {
+                    style: {
+                        colors: 'var(--fuse-text-secondary)',
+                    },
                 },
-                axisBorder: {
-                    show: false,
-                },
-                min: (min): number => min - 750,
                 max: (max): number => max + 250,
-                tickAmount: 5,
+                min: (min): number => min - 250,
                 show: false,
+                tickAmount: 5,
             },
         };
 
+        /**
         // Conversions
         this.chartConversions = {
             chart: {
@@ -361,83 +386,7 @@ export class ClientComponent implements OnInit, OnDestroy {
             },
         };
 
-        // Visitors vs Page Views
-        this.chartVisitorsVsPageViews = {
-            chart: {
-                animations: {
-                    enabled: false,
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'area',
-                toolbar: {
-                    show: false,
-                },
-                zoom: {
-                    enabled: false,
-                },
-            },
-            colors: ['#64748B', '#94A3B8'],
-            dataLabels: {
-                enabled: false,
-            },
-            fill: {
-                colors: ['#64748B', '#94A3B8'],
-                opacity: 0.5,
-            },
-            grid: {
-                show: false,
-                padding: {
-                    bottom: -40,
-                    left: 0,
-                    right: 0,
-                },
-            },
-            legend: {
-                show: false,
-            },
-            series: this.data.visitorsVsPageViews.series,
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-            },
-            tooltip: {
-                followCursor: true,
-                theme: 'dark',
-                x: {
-                    format: 'MMM dd, yyyy',
-                },
-            },
-            xaxis: {
-                axisBorder: {
-                    show: false,
-                },
-                labels: {
-                    offsetY: -20,
-                    rotate: 0,
-                    style: {
-                        colors: 'var(--fuse-text-secondary)',
-                    },
-                },
-                tickAmount: 3,
-                tooltip: {
-                    enabled: false,
-                },
-                type: 'datetime',
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        colors: 'var(--fuse-text-secondary)',
-                    },
-                },
-                max: (max): number => max + 250,
-                min: (min): number => min - 250,
-                show: false,
-                tickAmount: 5,
-            },
-        };
+
 
         // New vs. returning
         this.chartNewVsReturning = {
@@ -662,5 +611,34 @@ export class ClientComponent implements OnInit, OnDestroy {
                                                 </div>`,
             },
         };
+
+         */
+    }
+
+    private _mapChartSeriesToApexSeries(input: ChartSeries[]): any {
+        const result = input.map((s) => {
+            const points: DataPoint[] = (s.data ?? [])
+                .slice()
+                // ordena por period (YYYY-MM) para que la línea no “brinque”
+                .sort((a, b) => a.period.localeCompare(b.period))
+                .map(({ period, value }) => {
+                    const [yearStr, monthStr] = period.split('-');
+                    const year = Number(yearStr);
+                    const month = Number(monthStr) - 1; // Date month = 0..11
+
+                    return {
+                        x: new Date(year, month, 1),
+                        y: value,
+                    };
+                });
+
+            return {
+                name: s.label, // o s.key si prefieres
+                data: points,
+            };
+        });
+
+        console.log(result);
+        return result;
     }
 }

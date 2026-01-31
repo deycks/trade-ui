@@ -8,10 +8,10 @@ import {
     FuseVerticalNavigationComponent,
 } from '@fuse/components/navigation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { User } from 'app/core/interfaces/user.interface';
 import { NavigationService } from 'app/core/navigation/navigation.service';
 import { Navigation } from 'app/core/navigation/navigation.types';
-import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.types';
+import { UserService } from 'app/core/services/user.service';
 import { UserComponent } from 'app/layout/common/user/user.component';
 import { Subject, takeUntil } from 'rxjs';
 

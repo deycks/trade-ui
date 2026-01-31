@@ -12,9 +12,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { Router } from '@angular/router';
-import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.types';
+import { Router, RouterModule } from '@angular/router';
+import { User } from 'app/core/interfaces/user.interface';
+import { UserService } from 'app/core/services/user.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -28,6 +28,7 @@ import { Subject, takeUntil } from 'rxjs';
         MatMenuModule,
         MatIconModule,
         MatDividerModule,
+        RouterModule,
     ],
 })
 export class UserComponent implements OnInit, OnDestroy {
@@ -86,20 +87,6 @@ export class UserComponent implements OnInit, OnDestroy {
      *
      * @param status
      */
-    updateUserStatus(status: string): void {
-        // Return if user is not available
-        if (!this.user) {
-            return;
-        }
-
-        // Update the user
-        this._userService
-            .update({
-                ...this.user,
-                status,
-            })
-            .subscribe();
-    }
 
     /**
      * Sign out

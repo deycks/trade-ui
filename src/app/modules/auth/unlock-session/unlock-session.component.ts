@@ -16,7 +16,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
-import { UserService } from 'app/core/user/user.service';
+import { UserService } from 'app/core/services/user.service';
 import { PortadaBienvenidaComponent } from '../portada-bienvenida/portada-bienvenida.component';
 
 @Component({
@@ -112,17 +112,8 @@ export class AuthUnlockSessionComponent implements OnInit {
             })
             .subscribe(
                 () => {
-                    // Set the redirect url.
-                    // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
-                    // to the correct page after a successful sign in. This way, that url can be set via
-                    // routing file and we don't have to touch here.
-                    const redirectURL =
-                        this._activatedRoute.snapshot.queryParamMap.get(
-                            'redirectURL'
-                        ) || '/signed-in-redirect';
-
-                    // Navigate to the redirect url
-                    this._router.navigateByUrl(redirectURL);
+                    // Navigate to dashboard
+                    this._router.navigateByUrl('/inicio');
                 },
                 (response) => {
                     // Re-enable the form

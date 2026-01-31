@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
-import { UserService } from 'app/core/user/user.service';
+import { UserService } from 'app/core/services/user.service';
 import { environment } from 'environments/environment';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -55,7 +55,7 @@ export class AuthService {
      */
     signIn(credentials: { email: string; password: string }): Observable<any> {
         if (this._authenticated) {
-            return throwError(() => 'User is already logged in.');
+            return throwError(() => new Error('User is already logged in.'));
         }
 
         return this._httpClient
@@ -63,21 +63,19 @@ export class AuthService {
                 access_token: string;
             }>(`${environment.apiUrl}/auth/login`, credentials)
             .pipe(
-                switchMap((loginResponse) => {
-                    // 1️⃣ Guardar token
+                tap((loginResponse) => {
                     this.accessToken = loginResponse.access_token;
                     this._authenticated = true;
-
-                    // 2️⃣ Obtener perfil con token
-                    return this._userService.get();
                 }),
-                switchMap((user) => {
-                    console.log(user);
-                    // 3️⃣ Guardar usuario en UserService (Fuse)
+                switchMap(() => this._userService.get()),
+                tap((user) => {
                     this._userService.user = user;
-
-                    // 4️⃣ Devolver algo útil
-                    return of(user);
+                }),
+                catchError((err) => {
+                    // rollback
+                    this._authenticated = false;
+                    this.accessToken = null as any;
+                    return throwError(() => err);
                 })
             );
     }
@@ -154,6 +152,9 @@ export class AuthService {
         this._authenticated = true;
 
         return this._userService.get().pipe(
+            tap((user) => {
+                this._userService.user = user;
+            }),
             switchMap(() => of(true)),
             catchError(() => {
                 // Si falla /auth/profile, el token no sirve o la sesión no es válida

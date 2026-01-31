@@ -1,0 +1,32 @@
+@if (isLoading) {
+<app-loading></app-loading>
+} @else {
+<div class="p-4 sm:p-6">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">Dashboard Admin</h1>
+
+    @if (summary) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-sm text-gray-500">Capital gestionado</div>
+            <div class="mt-2 text-3xl font-semibold text-gray-900">
+                {{ summary.totalManagedCapital | currency:'MXN' }}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-sm text-gray-500">Clientes activos</div>
+            <div class="mt-2 text-3xl font-semibold text-gray-900">
+                {{ summary.totalActiveClients }}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-sm text-gray-500">Rendimientos pendientes</div>
+            <div class="mt-2 text-3xl font-semibold text-gray-900">
+                {{ summary.pendingYields | currency:'MXN' }}
+            </div>
+        </div>
+    </div>
+    }
+</div>
+}
