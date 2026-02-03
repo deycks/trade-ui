@@ -85,8 +85,8 @@
             </div>
 
             <div class="mt-4 flex justify-end gap-3">
-                <a [routerLink]="['/admin/clientes', client.id]" class="text-indigo-600 hover:underline text-sm">
-                    Ver
+                <a [routerLink]="['/clientes', client.id]" class="text-indigo-600 hover:underline text-sm">
+                    Ver detalle
                 </a>
                 <span class="text-gray-300">|</span>
                 <a (click)="openAdjustBalance(client)" class="text-indigo-600 hover:underline text-sm cursor-pointer">
@@ -146,8 +146,7 @@
                         </td>
                         @if(client.role == 'CLIENT' || client.role == 'PROSPECT') {
                         <td class="px-6 py-3 text-right">
-                            <a [routerLink]="['/admin/clientes', client.id]"
-                                class="text-indigo-600 hover:underline text-sm">
+                            <a [routerLink]="['/clientes', client.id]" class="text-indigo-600 hover:underline text-sm">
                                 Ver detalle
                             </a>
                             <span class="mx-2 text-gray-300">|</span>

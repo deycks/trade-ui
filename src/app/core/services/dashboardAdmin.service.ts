@@ -3,16 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { AdjustBalancePayload } from '../interfaces/balance.interface';
 import { AdminDashboardSummary } from '../interfaces/dashboardAdmin.interface';
 import { Client } from '../interfaces/user.interface';
 import { CommonFunctionsService } from './commonFunctions';
-
-export interface AdjustBalancePayload {
-    amount: number;
-    type: 'DEPOSIT' | 'WITHDRAWAL' | 'YIELD' | 'ADJUSTMENT' | string;
-    description?: string;
-    createdAt?: string; // ISO date
-}
 
 @Injectable({
     providedIn: 'root',
@@ -75,13 +69,22 @@ export class DashboardAdminService {
             );
     }
 
-    adjustUserBalance(userId: string, payload: AdjustBalancePayload): Observable<any> {
+    adjustUserBalance(
+        userId: string,
+        payload: AdjustBalancePayload
+    ): Observable<any> {
         return this._httpClient
-            .post<any>(`${environment.apiUrl}/admin/users/${userId}/balance`, payload)
+            .post<any>(
+                `${environment.apiUrl}/admin/users/${userId}/balance`,
+                payload
+            )
             .pipe(
                 retry(2),
                 catchError(
-                    this._service.handleError<any>('adjustUserBalance', undefined)
+                    this._service.handleError<any>(
+                        'adjustUserBalance',
+                        undefined
+                    )
                 )
             );
     }

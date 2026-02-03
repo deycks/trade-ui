@@ -3,6 +3,7 @@ import {
     ApplicationConfig,
     inject,
     isDevMode,
+    LOCALE_ID,
     provideAppInitializer,
 } from '@angular/core';
 import { LuxonDateAdapter } from '@angular/material-luxon-adapter';
@@ -20,6 +21,7 @@ import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 
 export const appConfig: ApplicationConfig = {
     providers: [
+        { provide: LOCALE_ID, useValue: 'es-MX' },
         provideAnimations(),
         provideHttpClient(),
         provideRouter(

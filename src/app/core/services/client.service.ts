@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from 'environments/environment';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { ResponseDashboardClient } from '../interfaces/dashboardClient.interface';
 import { Transaction } from '../interfaces/transaction.interface';
 import { CommonFunctionsService } from './commonFunctions';
-import dashboardMock from './data.json';
 
 @Injectable({
     providedIn: 'root',
@@ -18,20 +17,20 @@ export class ClientService {
     constructor() {}
 
     getDashboardData(): Observable<ResponseDashboardClient> {
-        if (true) {
-            const mock: any = dashboardMock;
-            const mapped: ResponseDashboardClient = {
-                ...mock,
-                kpis: {
-                    ...(mock.kpis ?? {}),
-                    asOf: mock.kpis?.asOf
-                        ? new Date(mock.kpis.asOf)
-                        : undefined,
-                },
-            };
+        // if (true) {
+        //     const mock: any = dashboardMock;
+        //     const mapped: ResponseDashboardClient = {
+        //         ...mock,
+        //         kpis: {
+        //             ...(mock.kpis ?? {}),
+        //             asOf: mock.kpis?.asOf
+        //                 ? new Date(mock.kpis.asOf)
+        //                 : undefined,
+        //         },
+        //     };
 
-            return of(mapped);
-        }
+        //     return of(mapped);
+        // }
 
         return this._httpClient
             .get<ResponseDashboardClient>(

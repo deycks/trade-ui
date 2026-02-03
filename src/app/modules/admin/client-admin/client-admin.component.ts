@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AdjustBalancePayload } from 'app/core/interfaces/balance.interface';
 import { Client } from 'app/core/interfaces/user.interface';
 import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service';
+import { LoadingComponent } from 'app/layout/common/loading/loading.component';
 import {
     Subject,
     debounceTime,
@@ -14,7 +16,7 @@ import {
 
 @Component({
     selector: 'app-client-admin',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterModule, LoadingComponent],
     templateUrl: './client-admin.component.html',
 })
 export class ClientAdminComponent implements OnInit, OnDestroy {

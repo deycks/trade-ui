@@ -136,12 +136,23 @@ export const appRoutes: Route[] = [
             },
             {
                 path: 'clientes',
+                pathMatch: 'full',
                 canActivate: [RoleGuard],
                 canActivateChild: [RoleGuard],
                 data: { roles: ['ADMIN'] },
                 loadChildren: () =>
                     import(
                         'app/modules/admin/client-admin/client-admin.routes'
+                    ),
+            },
+            {
+                path: 'clientes/:id',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['ADMIN'] },
+                loadChildren: () =>
+                    import(
+                        'app/modules/admin/detail-client/detail-client.routes'
                     ),
             },
             {

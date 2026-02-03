@@ -1,1 +1,83 @@
-<p>logs works!</p>
+@if (isLoading) {
+<app-loading></app-loading>
+} @else {
+<div class="p-4 sm:p-6 w-full max-w-none">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">
+        Logs de auditoría
+    </h1>
+
+    @if (logs) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-sm text-gray-500">Total de logs</div>
+            <div class="mt-2 text-3xl font-semibold text-gray-900">
+                {{ logs.totalLogs }}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-sm text-gray-500">Acciones registradas</div>
+            <div class="mt-2 text-3xl font-semibold text-gray-900">
+                {{ logs.logsByAction?.length || 0 }}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="text-sm text-gray-500">Logs recientes</div>
+            <div class="mt-2 text-3xl font-semibold text-gray-900">
+                {{ logs.recentLogs?.length || 0 }}
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow w-full">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Actividad reciente</h2>
+        </div>
+
+        @if (logs.recentLogs?.length) {
+        <div class="overflow-x-auto w-full">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Acción
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Admin
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Detalles
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Fecha
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @for (log of logs.recentLogs; track log.id) {
+                    <tr>
+                        <td class="px-6 py-4 text-sm text-gray-900">
+                            {{ log.action }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">
+                            {{ log.admin?.name || 'N/A' }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ log.details || 'Sin detalles' }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ log.createdAt | date:'medium' }}
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        } @else {
+        <div class="px-6 py-8 text-sm text-gray-500">Sin registros.</div>
+        }
+    </div>
+    }
+</div>
+}
