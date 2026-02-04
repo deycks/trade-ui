@@ -80,6 +80,53 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
         );
     }
 
+    get investedCapitalDeltaPct(): number {
+        const kpis = this.dataDashboard?.kpis;
+        if (!kpis?.investedCapital) {
+            return 0;
+        }
+
+        return (
+            (((kpis.currentBalance ?? 0) - kpis.investedCapital) /
+                kpis.investedCapital) *
+            100
+        );
+    }
+
+    get monthlyProfitPct(): number {
+        const kpis = this.dataDashboard?.kpis;
+        if (!kpis?.investedCapital) {
+            return 0;
+        }
+
+        return ((kpis.profitThisMonth ?? 0) / kpis.investedCapital) * 100;
+    }
+
+    get totalProfitPct(): number {
+        const kpis = this.dataDashboard?.kpis;
+        if (!kpis?.investedCapital) {
+            return 0;
+        }
+
+        return ((kpis.totalProfit ?? 0) / kpis.investedCapital) * 100;
+    }
+
+    getTrendIcon(pct: number): string {
+        return pct >= 0
+            ? 'heroicons_solid:arrow-up-circle'
+            : 'heroicons_solid:arrow-down-circle';
+    }
+
+    getTrendMiniIcon(pct: number): string {
+        return pct >= 0
+            ? 'heroicons_mini:arrow-trending-up'
+            : 'heroicons_mini:arrow-trending-down';
+    }
+
+    getTrendColorClass(pct: number): string {
+        return pct >= 0 ? 'text-green-500' : 'text-red-500';
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------

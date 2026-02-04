@@ -1,1 +1,91 @@
-<p>profile works!</p>
+@if (isLoading) {
+<app-loading></app-loading>
+} @else {
+<div class="p-6 sm:p-8 w-full max-w-none">
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-3xl font-semibold text-gray-900">Perfil</h1>
+            <p class="text-base text-gray-500">Tu información personal y fiscal</p>
+        </div>
+    </div>
+
+    @if (profile) {
+    <div class="rounded-2xl bg-white shadow">
+        <div class="flex flex-col gap-4 border-b border-gray-100 p-8 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+                <div
+                    class="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-2xl font-semibold text-indigo-600">
+                    {{ profile.name?.charAt(0) || '?' }}
+                </div>
+                <div>
+                    <div class="text-xl font-semibold text-gray-900">{{ profile.name }}</div>
+                    <div class="text-base text-gray-500">{{ profile.email }}</div>
+                </div>
+            </div>
+            <span
+                class="inline-flex items-center rounded-full bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700">
+                {{ profile.role }}
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 p-8 lg:grid-cols-3">
+            <div class="rounded-xl border border-gray-100 p-6">
+                <div class="text-sm uppercase tracking-wide text-gray-500">Resumen</div>
+                <div class="mt-5 space-y-4">
+                    <div>
+                        <div class="text-sm text-gray-500">Tasa</div>
+                        <div class="text-2xl font-semibold text-gray-900">
+                            {{ profile.investmentRate / 100 | percent:'1.1-1' }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Registro</div>
+                        <div class="text-base font-medium text-gray-900">
+                            {{ profile.createdAt | date:'mediumDate' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-100 p-6 lg:col-span-2">
+                <div class="text-sm uppercase tracking-wide text-gray-500">Datos personales</div>
+                <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div>
+                        <div class="text-sm text-gray-500">Teléfono</div>
+                        <div class="text-base font-medium text-gray-900">
+                            {{ profile.phone || 'N/A' }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Dirección</div>
+                        <div class="text-base font-medium text-gray-900">
+                            {{ profile.address || 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-100 p-6 lg:col-span-3">
+                <div class="text-sm uppercase tracking-wide text-gray-500">Información fiscal</div>
+                <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div>
+                        <div class="text-sm text-gray-500">CURP</div>
+                        <div class="text-base font-medium text-gray-900">
+                            {{ profile.curp || 'N/A' }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">RFC</div>
+                        <div class="text-base font-medium text-gray-900">
+                            {{ profile.rfc || 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    } @else {
+    <div class="text-sm text-gray-500">No se encontró información de perfil.</div>
+    }
+</div>
+}

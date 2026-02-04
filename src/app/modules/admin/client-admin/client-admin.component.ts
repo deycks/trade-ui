@@ -5,7 +5,9 @@ import { RouterModule } from '@angular/router';
 import { AdjustBalancePayload } from 'app/core/interfaces/balance.interface';
 import { Client } from 'app/core/interfaces/user.interface';
 import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service';
+import { ExportService } from 'app/core/services/export.service';
 import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { ModalAjusteBalanceComponent } from 'app/shared/components/modal-ajuste-balance/modal-ajuste-balance.component';
 import {
     Subject,
     debounceTime,
@@ -16,7 +18,13 @@ import {
 
 @Component({
     selector: 'app-client-admin',
-    imports: [CommonModule, FormsModule, RouterModule, LoadingComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        LoadingComponent,
+        ModalAjusteBalanceComponent,
+    ],
     templateUrl: './client-admin.component.html',
 })
 export class ClientAdminComponent implements OnInit, OnDestroy {
@@ -27,7 +35,10 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
     private _searchSubject = new Subject<string>();
     private _unsubscribeAll = new Subject<void>();
 
-    constructor(private _dashboardAdminService: DashboardAdminService) {}
+    constructor(
+        private _dashboardAdminService: DashboardAdminService,
+        private _exportService: ExportService
+    ) {}
 
     ngOnInit(): void {
         // Cargar lista completa inicial
@@ -80,36 +91,36 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
         this._searchSubject.next(term);
     }
 
+    exportClients(): void {
+        if (!this.clients?.length) {
+            return;
+        }
+
+        const exportData = this.clients.map((client) => ({
+            Nombre: client.name ?? '',
+            Email: client.email ?? '',
+            Rol: client.role ?? '',
+            Balance: client.balance ?? '',
+            Tasa: client.investmentRate ?? '',
+            Registro: client.createdAt
+                ? new Date(client.createdAt).toLocaleString('es-MX')
+                : '',
+        }));
+
+        this._exportService.exportToExcel(exportData, 'clientes');
+    }
+
     ngOnDestroy(): void {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
 
     showAdjustModal = false;
+    isSaving = false;
     selectedClient: Client | null = null;
-
-    adjustForm = {
-        amount: null as number | null,
-        type: '',
-        description: '',
-        createdAt: '',
-    };
-
-    private _getLocalDateTime(): string {
-        const now = new Date();
-        const pad = (n: number) => n.toString().padStart(2, '0');
-        return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    }
 
     openAdjustBalance(client: Client): void {
         this.selectedClient = client;
-        // reset limpio al abrir
-        this.adjustForm = {
-            amount: null,
-            type: '',
-            description: '',
-            createdAt: this._getLocalDateTime(),
-        };
         this.showAdjustModal = true;
     }
 
@@ -118,19 +129,12 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
         this.selectedClient = null;
     }
 
-    submitAdjustBalance(): void {
+    submitAdjustBalance(payload: AdjustBalancePayload): void {
         if (!this.selectedClient?.id) {
             return;
         }
 
-        const payload: AdjustBalancePayload = {
-            amount: this.adjustForm.amount ?? 0,
-            type: this.adjustForm.type,
-            description: this.adjustForm.description,
-            createdAt: this.adjustForm.createdAt
-                ? new Date(this.adjustForm.createdAt).toISOString()
-                : undefined,
-        };
+        this.isSaving = true;
 
         this._dashboardAdminService
             .adjustUserBalance(this.selectedClient.id, payload)
@@ -138,10 +142,12 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: () => {
                     this.closeAdjustBalance();
+                    this.isSaving = false;
                     this.loadClients(); // recarga tabla con el balance actualizado
                 },
                 error: (err) => {
                     console.error('Error ajustando balance:', err);
+                    this.isSaving = false;
                 },
             });
     }

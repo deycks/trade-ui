@@ -38,7 +38,7 @@
                 <!-- Email field -->
                 <mat-form-field class="w-full">
                     <mat-label>Correo electrónico</mat-label>
-                    <input id="email" matInput [formControlName]="'email'" />
+                    <input id="email" matInput [formControlName]="'email'" autocomplete="username" />
                     @if (signInForm.get('email').hasError('required')) {
                     <mat-error> El correo es requerido</mat-error>
                     }
@@ -52,7 +52,8 @@
                 <!-- Password field -->
                 <mat-form-field class="w-full">
                     <mat-label>Contraseña</mat-label>
-                    <input id="password" matInput type="password" [formControlName]="'password'" #passwordField />
+                    <input id="password" matInput type="password" [formControlName]="'password'" #passwordField
+                        autocomplete="current-password" />
                     <button mat-icon-button type="button" (click)="
                             passwordField.type === 'password'
                                 ? (passwordField.type = 'text')

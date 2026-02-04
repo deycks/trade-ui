@@ -23,7 +23,12 @@ export class AuthUtils {
         }
 
         // Get the expiration date
-        const date = this._getTokenExpirationDate(token);
+        let date: Date | null = null;
+        try {
+            date = this._getTokenExpirationDate(token);
+        } catch {
+            return true;
+        }
 
         offsetSeconds = offsetSeconds || 0;
 

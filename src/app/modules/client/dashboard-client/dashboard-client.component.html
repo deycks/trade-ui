@@ -12,11 +12,11 @@
         <div class="mb-6 text-sm text-gray-500">
             {{ dataDashboard?.uiHints?.emptyState?.message }}
         </div>
-        <div class="flex justify-center">
+        <!-- <div class="flex justify-center">
             <button mat-flat-button color="primary" class="px-6 py-2">
                 Contactar a mi ejecutivo
             </button>
-        </div>
+        </div> -->
     </div>
 </div>
 } @else {
@@ -35,10 +35,6 @@
             </div>
 
             <div class="ml-6 flex items-center">
-                <button class="ml-3 hidden sm:inline-flex" mat-flat-button color="primary">
-                    <mat-icon class="icon-size-5" svgIcon="heroicons_solid:arrow-up-tray"></mat-icon>
-                    <span class="ml-2">Export</span>
-                </button>
 
                 <!-- Actions menu (visible on xs) -->
                 <div class="sm:hidden">
@@ -61,17 +57,6 @@
                     <div class="truncate text-lg font-medium leading-6 tracking-tight">
                         Evolución de la cuenta
                     </div>
-                    <div class="ml-2">
-                        <button class="bg-hover h-6 min-h-6 rounded-full px-2" mat-button
-                            [matMenuTriggerFor]="conversionMenu">
-                            <span class="text-secondary text-sm font-medium">30 días</span>
-                        </button>
-                        <mat-menu #conversionMenu="matMenu">
-                            <button mat-menu-item>30 días</button>
-                            <button mat-menu-item>3 meses</button>
-                            <button mat-menu-item>9 meses</button>
-                        </mat-menu>
-                    </div>
                 </div>
 
                 <div class="mx-6 mt-6 flex items-start">
@@ -87,13 +72,15 @@
                             </div>
                             <div class="mt-2 flex items-start">
                                 <div class="text-4xl font-bold leading-none tracking-tight">
-                                    {{ dataDashboard?.kpis?.currentBalance | currency:'MXN' }}
+                                    {{ dataDashboard?.kpis?.currentBalance| currency:'MXN':'symbol':'1.2-2' }}
                                 </div>
                                 <div class="ml-2 flex items-center">
-                                    <mat-icon class="text-green-500 icon-size-5"
-                                        svgIcon="heroicons_solid:arrow-up-circle"></mat-icon>
-                                    <div class="ml-1 text-md font-medium text-green-500">
-                                        42.9%
+                                    <mat-icon class="icon-size-5"
+                                        [ngClass]="getTrendColorClass(investedCapitalDeltaPct)"
+                                        [svgIcon]="getTrendIcon(investedCapitalDeltaPct)"></mat-icon>
+                                    <div class="ml-1 text-md font-medium"
+                                        [ngClass]="getTrendColorClass(investedCapitalDeltaPct)">
+                                        {{ investedCapitalDeltaPct | number:'1.1-1' }}%
                                     </div>
                                 </div>
                             </div>
@@ -110,13 +97,14 @@
                             </div>
                             <div class="mt-2 flex items-start">
                                 <div class="text-4xl font-bold leading-none tracking-tight">
-                                    {{ dataDashboard?.kpis?.totalProfit | currency:'MXN' }}
+                                    {{ dataDashboard?.kpis?.totalProfit| currency:'MXN':'symbol':'1.2-2' }}
                                 </div>
                                 <div class="ml-2 flex items-center">
-                                    <mat-icon class="text-red-500 icon-size-5"
-                                        svgIcon="heroicons_solid:arrow-down-circle"></mat-icon>
-                                    <div class="ml-1 text-md font-medium text-red-500">
-                                        13.1%
+                                    <mat-icon class="icon-size-5" [ngClass]="getTrendColorClass(totalProfitPct)"
+                                        [svgIcon]="getTrendIcon(totalProfitPct)"></mat-icon>
+                                    <div class="ml-1 text-md font-medium"
+                                        [ngClass]="getTrendColorClass(totalProfitPct)">
+                                        {{ totalProfitPct | number:'1.1-1' }}%
                                     </div>
                                 </div>
                             </div>
@@ -133,13 +121,14 @@
                             </div>
                             <div class="mt-2 flex items-start">
                                 <div class="text-4xl font-bold leading-none tracking-tight">
-                                    {{ dataDashboard?.kpis?.profitThisMonth | currency:'MXN' }}
+                                    {{ dataDashboard?.kpis?.profitThisMonth| currency:'MXN':'symbol':'1.2-2' }}
                                 </div>
                                 <div class="ml-2 flex items-center">
-                                    <mat-icon class="text-green-500 icon-size-5"
-                                        svgIcon="heroicons_solid:arrow-up-circle"></mat-icon>
-                                    <div class="ml-1 text-md font-medium text-green-500">
-                                        22.2%
+                                    <mat-icon class="icon-size-5" [ngClass]="getTrendColorClass(monthlyProfitPct)"
+                                        [svgIcon]="getTrendIcon(monthlyProfitPct)"></mat-icon>
+                                    <div class="ml-1 text-md font-medium"
+                                        [ngClass]="getTrendColorClass(monthlyProfitPct)">
+                                        {{ monthlyProfitPct | number:'1.1-1' }}%
                                     </div>
                                 </div>
                             </div>
@@ -163,17 +152,6 @@
                     <div class="truncate text-lg font-medium leading-6 tracking-tight">
                         Capital invertido
                     </div>
-                    <div class="ml-2">
-                        <button class="bg-hover h-6 min-h-6 rounded-full px-2" mat-button
-                            [matMenuTriggerFor]="conversionMenu">
-                            <span class="text-secondary text-sm font-medium">30 días</span>
-                        </button>
-                        <mat-menu #conversionMenu="matMenu">
-                            <button mat-menu-item>30 días</button>
-                            <button mat-menu-item>3 meses</button>
-                            <button mat-menu-item>9 meses</button>
-                        </mat-menu>
-                    </div>
                 </div>
 
                 <div class="mx-6 mt-3 flex flex-col lg:flex-row lg:items-center">
@@ -181,23 +159,18 @@
                         {{ dataDashboard?.kpis?.investedCapital | currency:'MXN'}}
                     </div>
                     <div class="flex lg:ml-3 lg:flex-col">
-                        <mat-icon class="text-red-500 icon-size-5"
-                            svgIcon="heroicons_mini:arrow-trending-down"></mat-icon>
+                        <mat-icon class="icon-size-5" [ngClass]="getTrendColorClass(investedCapitalDeltaPct)"
+                            [svgIcon]="getTrendMiniIcon(investedCapitalDeltaPct)"></mat-icon>
                         <div
                             class="text-secondary ml-1 flex items-center whitespace-nowrap text-md leading-none lg:ml-0 lg:mt-0.5">
-                            <span class="font-medium text-red-500">2%</span>
-                            <span class="ml-1">below target</span>
+                            <span class="font-medium" [ngClass]="getTrendColorClass(investedCapitalDeltaPct)">
+                                {{ investedCapitalDeltaPct | number:'1.1-1' }}%
+                            </span>
+                            <span class="ml-1">del mes</span>
                         </div>
 
                     </div>
                 </div>
-
-                <!-- <div class="flex h-20 flex-auto flex-col">
-                    <apx-chart class="h-full w-full flex-auto" [chart]="chartConversions.chart"
-                        [colors]="chartConversions.colors" [series]="chartConversions.series"
-                        [stroke]="chartConversions.stroke" [tooltip]="chartConversions.tooltip"
-                        [xaxis]="chartConversions.xaxis" [yaxis]="chartConversions.yaxis"></apx-chart>
-                </div> -->
             </div>
 
             <!-- Rendimiento del mes actual -->
@@ -206,39 +179,24 @@
                     <div class="truncate text-lg font-medium leading-6 tracking-tight">
                         Rendimiento del mes actual
                     </div>
-                    <div class="ml-2">
-                        <button class="bg-hover h-6 min-h-6 rounded-full px-2" mat-button
-                            [matMenuTriggerFor]="impressionsMenu">
-                            <span class="text-secondary text-sm font-medium">30 días</span>
-                        </button>
-                        <mat-menu #impressionsMenu="matMenu">
-                            <button mat-menu-item>30 días</button>
-                            <button mat-menu-item>3 meses</button>
-                            <button mat-menu-item>9 meses</button>
-                        </mat-menu>
-                    </div>
                 </div>
 
                 <div class="mx-6 mt-3 flex flex-col lg:flex-row lg:items-center">
                     <div class="text-7xl font-bold leading-tight tracking-tighter">
-                        {{ dataDashboard?.kpis?.monthlyRate | percent:'1.2-2'}}
+                        {{ dataDashboard?.kpis?.monthlyRate / 100 | percent:'1.1-1'}}
                     </div>
                     <div class="flex lg:ml-3 lg:flex-col">
-                        <mat-icon class="text-red-500 icon-size-5"
-                            svgIcon="heroicons_mini:arrow-trending-down"></mat-icon>
+                        <mat-icon class="icon-size-5" [ngClass]="getTrendColorClass(monthlyProfitPct)"
+                            [svgIcon]="getTrendMiniIcon(monthlyProfitPct)"></mat-icon>
                         <div
                             class="text-secondary ml-1 flex items-center whitespace-nowrap text-md leading-none lg:ml-0 lg:mt-0.5">
-                            <span class="font-medium text-red-500">4%</span>
-                            <span class="ml-1">below target</span>
+                            <span class="font-medium" [ngClass]="getTrendColorClass(monthlyProfitPct)">
+                                {{ monthlyProfitPct / 100 | percent:'1.1-1'}}
+                            </span>
+                            <span class="ml-1">desde inicio</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- <div class="flex h-20 flex-auto flex-col">
-                    <apx-chart class="h-full w-full flex-auto" [chart]="chartVisits.chart" [colors]="chartVisits.colors"
-                        [series]="chartVisits.series" [stroke]="chartVisits.stroke" [tooltip]="chartVisits.tooltip"
-                        [xaxis]="chartVisits.xaxis" [yaxis]="chartVisits.yaxis"></apx-chart>
-                </div> -->
             </div>
 
             <!-- Rendimiento total % -->
@@ -247,40 +205,26 @@
                     <div class="truncate text-lg font-medium leading-6 tracking-tight">
                         Rendimiento total %
                     </div>
-                    <div class="ml-2">
-                        <button class="bg-hover h-6 min-h-6 rounded-full px-2" mat-button
-                            [matMenuTriggerFor]="impressionsMenu">
-                            <span class="text-secondary text-sm font-medium">30 días</span>
-                        </button>
-                        <mat-menu #impressionsMenu="matMenu">
-                            <button mat-menu-item>30 días</button>
-                            <button mat-menu-item>3 meses</button>
-                            <button mat-menu-item>9 meses</button>
-                        </mat-menu>
-                    </div>
                 </div>
 
                 <div class="mx-6 mt-3 flex flex-col lg:flex-row lg:items-center">
                     <div class="text-7xl font-bold leading-tight tracking-tighter">
-                        {{ dataDashboard?.kpis?.sinceStartReturnPct | percent:'1.2-2'}}
+                        {{ dataDashboard?.kpis?.sinceStartReturnPct / 100 | percent:'1.1-1'}}
                     </div>
                     <div class="flex lg:ml-3 lg:flex-col">
-                        <mat-icon class="text-red-500 icon-size-5"
-                            svgIcon="heroicons_mini:arrow-trending-down"></mat-icon>
+                        <mat-icon class="icon-size-5"
+                            [ngClass]="getTrendColorClass(dataDashboard?.kpis?.sinceStartReturnPct ?? 0)"
+                            [svgIcon]="getTrendMiniIcon(dataDashboard?.kpis?.sinceStartReturnPct ?? 0)"></mat-icon>
                         <div
                             class="text-secondary ml-1 flex items-center whitespace-nowrap text-md leading-none lg:ml-0 lg:mt-0.5">
-                            <span class="font-medium text-red-500">4%</span>
-                            <span class="ml-1">below target</span>
+                            <span class="font-medium"
+                                [ngClass]="getTrendColorClass(dataDashboard?.kpis?.sinceStartReturnPct ?? 0)">
+                                {{ (dataDashboard?.kpis?.sinceStartReturnPct ?? 0) * 100 | number:'1.1-1' }}%
+                            </span>
+                            <span class="ml-1">vs capital</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- <div class="flex h-20 flex-auto flex-col">
-                    <apx-chart class="h-full w-full flex-auto" [chart]="chartImpressions.chart"
-                        [colors]="chartImpressions.colors" [series]="chartImpressions.series"
-                        [stroke]="chartImpressions.stroke" [tooltip]="chartImpressions.tooltip"
-                        [xaxis]="chartImpressions.xaxis" [yaxis]="chartImpressions.yaxis"></apx-chart>
-                </div> -->
             </div>
 
             <!-- Visitors overview -->

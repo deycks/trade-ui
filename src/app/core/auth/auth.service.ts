@@ -19,6 +19,11 @@ export class AuthService {
      * Setter & getter for access token
      */
     set accessToken(token: string) {
+        if (!token) {
+            localStorage.removeItem('accessToken');
+            return;
+        }
+
         localStorage.setItem('accessToken', token);
     }
 

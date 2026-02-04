@@ -18,12 +18,15 @@
         </div>
         <!-- User -->
         <div class="flex w-full flex-col items-center p-4">
-            <div class="relative h-24 w-24">
+            <div class="relative">
                 @if (user.avatar) {
                 <img class="h-full w-full rounded-full" [src]="user.avatar" alt="User avatar" />
                 }
                 @if (!user.avatar) {
-                <mat-icon class="icon-size-24" [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                <div
+                    class="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-2xl font-semibold text-indigo-600">
+                    {{ user.name?.charAt(0) || '?' }}
+                </div>
                 }
             </div>
             <div class="mt-6 flex w-full flex-col items-center justify-center">

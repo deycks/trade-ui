@@ -12,7 +12,6 @@ export interface User {
 
 export interface Client extends User {
     balance: string | number;
-    investmentRate: string | number;
     createdAt: string;
     updatedAt: string;
     phone: string;
@@ -21,4 +20,5 @@ export interface Client extends User {
     address: string;
     transactions: Transaction[];
     auditLogs: any[];
+    investmentRate: string | number;
 }

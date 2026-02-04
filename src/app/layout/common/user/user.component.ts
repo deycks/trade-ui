@@ -94,4 +94,9 @@ export class UserComponent implements OnInit, OnDestroy {
     signOut(): void {
         this._router.navigate(['/sign-out']);
     }
+
+    get showProfileLink(): boolean {
+        const role = this.user?.role;
+        return role === 'CLIENT' || role === 'PROSPECT';
+    }
 }

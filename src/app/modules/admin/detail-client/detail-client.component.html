@@ -9,24 +9,44 @@
             <p class="text-sm text-gray-500">{{ user.id }}</p>
         </div>
 
-        <a [routerLink]="['/clientes']"
-            class="inline-flex items-center px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
-            Volver a clientes
-        </a>
+        <div class="flex items-center gap-2">
+
+            <a [routerLink]="['/clientes']" class="text-sm text-indigo-600 hover:underline">
+                Volver a clientes
+            </a>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <!-- Perfil -->
         <div class="lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <div class="text-xs uppercase tracking-wide text-gray-400">Cliente</div>
-                    <div class="text-lg font-semibold text-gray-900">{{ user.name }}</div>
-                    <div class="text-sm text-gray-500">{{ user.email }}</div>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-2xl font-semibold text-indigo-600">
+                        {{ user.name?.charAt(0) || '?' }}
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-wide text-gray-400">Cliente</div>
+                        <div class="text-lg font-semibold text-gray-900">{{ user.name }}</div>
+                        <div class="text-sm text-gray-500">{{ user.email }}</div>
+                        <span class="px-2 py-1 text-xs rounded-full" [ngClass]="{
+                            'bg-green-100 text-green-800': user.role === 'CLIENT',
+                            'bg-yellow-100 text-yellow-800': user.role === 'PROSPECT',
+                            'bg-blue-100 text-blue-800': user.role === 'ADMIN'
+                        }">
+                            {{ user.role }}
+                        </span>
+                    </div>
                 </div>
-                <span class="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
-                    {{ user.role }}
-                </span>
+
+
+                <div class="flex items-center justify-end gap-2">
+                    <button (click)="openEditModal()"
+                        class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+                        Editar datos
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -51,31 +71,38 @@
 
         <!-- Métricas -->
         <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-4">
-            <div class="rounded-lg border border-gray-100 p-4">
-                <div class="text-xs text-gray-500">Balance</div>
-                <div class="text-2xl font-semibold text-gray-900">
-                    {{ +user.balance | currency:'MXN' }}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="rounded-lg border border-gray-100 p-4">
+                    <div class="text-xs text-gray-500">Balance</div>
+                    <div class="text-2xl font-semibold text-gray-900">
+                        {{ +user.balance| currency:'MXN':'symbol':'1.2-2' }}
+                    </div>
+                    <button (click)="openAdjustBalance()" class="text-sm text-indigo-600 hover:underline">
+                        Ajustar balance
+                    </button>
+                </div>
+
+                <div class="rounded-lg border border-gray-100 p-4">
+                    <div class="text-xs text-gray-500">Tasa</div>
+                    <div class="text-2xl font-semibold text-gray-900">
+                        {{ user.investmentRate / 100 | percent:'1.1-1'}}
+                    </div>
                 </div>
             </div>
 
-            <div class="rounded-lg border border-gray-100 p-4">
-                <div class="text-xs text-gray-500">Tasa</div>
-                <div class="text-2xl font-semibold text-gray-900">
-                    {{ +user.investmentRate | percent:'1.2-2' }}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="rounded-lg border border-gray-100 p-4">
+                    <div class="text-xs text-gray-500">Creado</div>
+                    <div class="text-sm font-medium text-gray-900">
+                        {{ user.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                    </div>
                 </div>
-            </div>
 
-            <div class="rounded-lg border border-gray-100 p-4">
-                <div class="text-xs text-gray-500">Creado</div>
-                <div class="text-sm font-medium text-gray-900">
-                    {{ user.createdAt | date:'dd/MM/yyyy HH:mm' }}
-                </div>
-            </div>
-
-            <div class="rounded-lg border border-gray-100 p-4">
-                <div class="text-xs text-gray-500">Actualizado</div>
-                <div class="text-sm font-medium text-gray-900">
-                    {{ user.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+                <div class="rounded-lg border border-gray-100 p-4">
+                    <div class="text-xs text-gray-500">Actualizado</div>
+                    <div class="text-sm font-medium text-gray-900">
+                        {{ user.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,7 +136,7 @@
                         <td class="px-6 py-3 text-sm text-gray-700">{{ t.type }}</td>
                         <td class="px-6 py-3 text-sm text-gray-700">{{ t.description || '—' }}</td>
                         <td class="px-6 py-3 text-sm text-right font-semibold text-gray-900">
-                            {{ +t.amount | currency:'MXN' }}
+                            {{ +t.amount| currency:'MXN':'symbol':'1.2-2' }}
                         </td>
                     </tr>
                     }
@@ -130,7 +157,7 @@
                 <div class="text-right">
                     <div class="text-sm text-gray-500">Monto</div>
                     <div class="text-base font-semibold text-green-600">
-                        {{ +t.amount | currency:'MXN' }}
+                        {{ +t.amount| currency:'MXN':'symbol':'1.2-2' }}
                     </div>
                 </div>
             </div>
@@ -148,3 +175,74 @@
     }
     }
 </div>
+
+@if (showEditModal) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="w-full max-w-3xl rounded-lg bg-white shadow-lg">
+        <div class="flex items-center justify-between border-b px-6 py-4">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900">Editar cliente</h3>
+                <div class="text-xs text-gray-500">{{ user?.name }} · {{ user?.id }}</div>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600" (click)="closeEditModal()">✕</button>
+        </div>
+
+        <div class="px-6 py-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Nombre</label>
+                    <input type="text" [(ngModel)]="editForm.name"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Correo</label>
+                    <input type="email" [(ngModel)]="editForm.email"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Teléfono</label>
+                    <input type="text" [(ngModel)]="editForm.phone"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">CURP</label>
+                    <input type="text" [(ngModel)]="editForm.curp"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">RFC</label>
+                    <input type="text" [(ngModel)]="editForm.rfc"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Tasa</label>
+                    <input type="number" step="0.01" [(ngModel)]="editForm.investmentRate"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs text-gray-500 mb-1">Dirección</label>
+                    <input type="text" [(ngModel)]="editForm.address"
+                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-3 border-t px-6 py-4">
+            <button type="button" (click)="closeEditModal()"
+                class="px-4 py-2 text-sm rounded-lg border border-gray-200">Cancelar</button>
+            <button type="button" (click)="saveProfile()" [disabled]="isSaving"
+                class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50">
+                @if (!isSaving) {
+                Guardar cambios
+                }
+                @if (isSaving) {
+                Guardando...
+                }
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<app-modal-ajuste-balance [isOpen]="showAdjustModal" [client]="selectedClient" [isSaving]="isAdjustingBalance"
+    (close)="closeAdjustBalance()" (save)="submitAdjustBalance($event)"></app-modal-ajuste-balance>

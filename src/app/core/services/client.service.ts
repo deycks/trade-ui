@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { ResponseDashboardClient } from '../interfaces/dashboardClient.interface';
 import { Transaction } from '../interfaces/transaction.interface';
+import { Client } from '../interfaces/user.interface';
 import { CommonFunctionsService } from './commonFunctions';
 
 @Injectable({
@@ -17,21 +18,6 @@ export class ClientService {
     constructor() {}
 
     getDashboardData(): Observable<ResponseDashboardClient> {
-        // if (true) {
-        //     const mock: any = dashboardMock;
-        //     const mapped: ResponseDashboardClient = {
-        //         ...mock,
-        //         kpis: {
-        //             ...(mock.kpis ?? {}),
-        //             asOf: mock.kpis?.asOf
-        //                 ? new Date(mock.kpis.asOf)
-        //                 : undefined,
-        //         },
-        //     };
-
-        //     return of(mapped);
-        // }
-
         return this._httpClient
             .get<ResponseDashboardClient>(
                 `${environment.apiUrl}/client/dashboard`
@@ -46,6 +32,7 @@ export class ClientService {
                 )
             );
     }
+
     getTransactions(): Observable<Transaction[]> {
         return this._httpClient
             .get<Transaction[]>(`${environment.apiUrl}/client/transactions`)
@@ -55,6 +42,37 @@ export class ClientService {
                     this._service.handleError<Transaction[]>(
                         'getTransactions',
                         []
+                    )
+                )
+            );
+    }
+
+    getProfileClient(): Observable<Client> {
+        return this._httpClient
+            .get<Client>(`${environment.apiUrl}/client/profile`)
+            .pipe(
+                retry(2),
+                catchError(
+                    this._service.handleError<Client>(
+                        'getProfileClient',
+                        undefined
+                    )
+                )
+            );
+    }
+
+    updateAdminUserClient(
+        id: string,
+        payload: Partial<Client>
+    ): Observable<Client> {
+        return this._httpClient
+            .patch<Client>(`${environment.apiUrl}/admin/users/${id}`, payload)
+            .pipe(
+                retry(2),
+                catchError(
+                    this._service.handleError<Client>(
+                        'updateAdminUserClient',
+                        undefined
                     )
                 )
             );

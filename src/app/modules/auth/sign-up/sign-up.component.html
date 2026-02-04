@@ -1,7 +1,7 @@
 <div class="flex min-w-0 flex-auto flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
     <div
         class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow md:flex md:h-full md:w-1/2 md:items-center md:justify-end md:rounded-none md:p-16 md:shadow-none">
-        <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
+        <div class="mx-auto w-full max-w-3xl sm:mx-0 sm:w-full">
             <!-- Title -->
             <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
                 Crear cuenta
@@ -23,124 +23,155 @@
 
             <!-- Sign Up form -->
             <form class="mt-8" [formGroup]="signUpForm" #signUpNgForm="ngForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <!-- Nombre completo -->
+                        <mat-form-field class="w-full">
+                            <mat-label class="font-semibold">Nombre completo</mat-label>
+                            <input id="name" matInput [formControlName]="'name'" maxlength="30" />
+                            @if (c('name').hasError('required')) {
+                            <mat-error>El nombre completo es obligatorio.</mat-error>
+                            }
+                        </mat-form-field>
 
-                <!-- Nombre completo -->
-                <mat-form-field class="w-full">
-                    <mat-label>Nombre completo</mat-label>
-                    <input id="name" matInput [formControlName]="'name'" maxlength="30" />
-                    @if (c('name').hasError('required')) {
-                    <mat-error>El nombre completo es obligatorio.</mat-error>
-                    }
-                    @if (c('name').hasError('minlength')) {
-                    <mat-error>El nombre debe tener al menos 3 caracteres.</mat-error>
-                    }
-                    @if (c('name').hasError('maxlength')) {
-                    <mat-error>El nombre no puede exceder 30 caracteres.</mat-error>
-                    }
-                </mat-form-field>
+                        <!-- Correo -->
+                        <mat-form-field class="w-full">
+                            <mat-label class="font-semibold">Correo electrónico</mat-label>
+                            <input id="email" matInput [formControlName]="'email'" autocomplete="email" />
+                            @if (c('email').hasError('required')) {
+                            <mat-error>El correo electrónico es obligatorio.</mat-error>
+                            }
+                            @if (c('email').hasError('email')) {
+                            <mat-error>Ingresa un correo electrónico válido.</mat-error>
+                            }
+                        </mat-form-field>
 
-                <!-- Correo -->
-                <mat-form-field class="w-full">
-                    <mat-label>Correo electrónico</mat-label>
-                    <input id="email" matInput [formControlName]="'email'" autocomplete="email" />
-                    @if (c('email').hasError('required')) {
-                    <mat-error>El correo electrónico es obligatorio.</mat-error>
-                    }
-                    @if (c('email').hasError('email')) {
-                    <mat-error>Ingresa un correo electrónico válido.</mat-error>
-                    }
-                </mat-form-field>
+                        <!-- Password -->
+                        <mat-form-field class="w-full">
+                            <mat-label class="font-semibold">Contraseña</mat-label>
+                            <input id="password" matInput type="password" [formControlName]="'password'" #passwordField
+                                autocomplete="new-password" />
+                            <button mat-icon-button type="button"
+                                (click)="passwordField.type === 'password' ? (passwordField.type = 'text') : (passwordField.type = 'password')"
+                                matSuffix>
+                                @if (passwordField.type === 'password') {
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                                }
+                                @if (passwordField.type === 'text') {
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                                }
+                            </button>
 
-                <!-- Teléfono -->
-                <mat-form-field class="w-full">
-                    <mat-label>Teléfono</mat-label>
-                    <input id="phone" matInput [formControlName]="'phone'" inputmode="tel" autocomplete="tel" />
-                    @if (c('phone').hasError('required')) {
-                    <mat-error>El teléfono es obligatorio.</mat-error>
-                    }
-                    @if (c('phone').hasError('minlength')) {
-                    <mat-error>El teléfono debe tener al menos 10 caracteres.</mat-error>
-                    }
-                    @if (c('phone').hasError('maxlength')) {
-                    <mat-error>El teléfono no puede exceder 15 caracteres.</mat-error>
-                    }
-                    @if (c('phone').hasError('pattern')) {
-                    <mat-error>Ingresa un teléfono válido (solo números, puede incluir +).</mat-error>
-                    }
-                </mat-form-field>
+                            @if (c('password').hasError('required')) {
+                            <mat-error>La contraseña es obligatoria.</mat-error>
+                            }
+                        </mat-form-field>
 
-                <!-- CURP -->
-                <mat-form-field class="w-full">
-                    <mat-label>CURP</mat-label>
-                    <input id="curp" matInput [formControlName]="'curp'" maxlength="18" autocapitalize="characters" />
-                    @if (c('curp').hasError('required')) {
-                    <mat-error>La CURP es obligatoria.</mat-error>
-                    }
-                    @if (c('curp').hasError('pattern')) {
-                    <mat-error>Ingresa una CURP válida (18 caracteres).</mat-error>
-                    }
-                </mat-form-field>
-
-                <!-- RFC -->
-                <mat-form-field class="w-full">
-                    <mat-label>RFC (con homoclave)</mat-label>
-                    <input id="rfc" matInput [formControlName]="'rfc'" maxlength="13" autocapitalize="characters" />
-                    @if (c('rfc').hasError('required')) {
-                    <mat-error>El RFC es obligatorio.</mat-error>
-                    }
-                    @if (c('rfc').hasError('pattern')) {
-                    <mat-error>Ingresa un RFC válido con homoclave (12 o 13 caracteres).</mat-error>
-                    }
-                </mat-form-field>
-
-                <!-- Dirección -->
-                <mat-form-field class="w-full">
-                    <mat-label>Dirección</mat-label>
-                    <textarea id="address" matInput [formControlName]="'address'" rows="2"></textarea>
-                    @if (c('address').hasError('required')) {
-                    <mat-error>La dirección es obligatoria.</mat-error>
-                    }
-                    @if (c('address').hasError('minlength')) {
-                    <mat-error>La dirección debe tener al menos 10 caracteres.</mat-error>
-                    }
-                    @if (c('address').hasError('maxlength')) {
-                    <mat-error>La dirección no puede exceder 120 caracteres.</mat-error>
-                    }
-                </mat-form-field>
-
-                <!-- Password -->
-                <mat-form-field class="w-full">
-                    <mat-label>Contraseña</mat-label>
-                    <input id="password" matInput type="password" [formControlName]="'password'" #passwordField
-                        autocomplete="new-password" />
-                    <button mat-icon-button type="button"
-                        (click)="passwordField.type === 'password' ? (passwordField.type = 'text') : (passwordField.type = 'password')"
-                        matSuffix>
-                        @if (passwordField.type === 'password') {
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                        @if (c('password').value?.length) {
+                        <div class="-mt-1 space-y-2">
+                            <div class="flex items-center justify-between text-sm font-medium text-gray-500">
+                                <span>Fortaleza: {{ passwordStrength.label }}</span>
+                                <span>{{ passwordStrength.percent }}%</span>
+                            </div>
+                            <div class="h-3 w-full rounded-full bg-gray-200">
+                                <div class="h-3 rounded-full transition-all duration-200"
+                                    [class]="passwordStrength.colorClass" [style.width.%]="passwordStrength.percent">
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-2 gap-x-4 gap-y-2 text-base text-gray-600 italic">
+                                <li [class.text-green-600]="passwordStrength.rules.minLength">
+                                    8+ caracteres
+                                </li>
+                                <li [class.text-green-600]="passwordStrength.rules.upper">
+                                    Mayúscula
+                                </li>
+                                <li [class.text-green-600]="passwordStrength.rules.lower">
+                                    Minúscula
+                                </li>
+                                <li [class.text-green-600]="passwordStrength.rules.number">
+                                    Número
+                                </li>
+                                <li [class.text-green-600]="passwordStrength.rules.special">
+                                    Carácter especial
+                                </li>
+                            </ul>
+                        </div>
                         }
-                        @if (passwordField.type === 'text') {
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
-                        }
-                    </button>
 
-                    @if (c('password').hasError('required')) {
-                    <mat-error>La contraseña es obligatoria.</mat-error>
-                    }
-                    @if (c('password').hasError('minlength')) {
-                    <mat-error>Debe tener al menos 8 caracteres.</mat-error>
-                    }
-                    @if (c('password').hasError('pattern')) {
-                    <mat-error>Debe incluir mayúscula, minúscula, número y un carácter especial.</mat-error>
-                    }
-                </mat-form-field>
+                        <!-- Confirm Password -->
+                        <mat-form-field class="w-full">
+                            <mat-label class="font-semibold">Confirmar contraseña</mat-label>
+                            <input id="confirmPassword" matInput type="password" [formControlName]="'confirmPassword'"
+                                autocomplete="new-password" />
+
+                            @if (c('confirmPassword').hasError('required')) {
+                            <mat-error>Confirma tu contraseña.</mat-error>
+                            }
+                            @if (c('confirmPassword').hasError('minlength')) {
+                            <mat-error>Debe tener al menos 8 caracteres.</mat-error>
+                            }
+                            @if (c('confirmPassword').hasError('passwordMismatch')) {
+                            <mat-error>Las contraseñas no coinciden.</mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Teléfono -->
+                        <mat-form-field class="w-full">
+                            <mat-label>Teléfono</mat-label>
+                            <input id="phone" matInput [formControlName]="'phone'" inputmode="tel" autocomplete="tel" />
+                            @if (c('phone').hasError('minlength')) {
+                            <mat-error>El teléfono debe tener al menos 10 caracteres.</mat-error>
+                            }
+                            @if (c('phone').hasError('maxlength')) {
+                            <mat-error>El teléfono no puede exceder 15 caracteres.</mat-error>
+                            }
+                            @if (c('phone').hasError('pattern')) {
+                            <mat-error>Ingresa un teléfono válido (solo números, puede incluir +).</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- CURP -->
+                        <mat-form-field class="w-full">
+                            <mat-label>CURP</mat-label>
+                            <input id="curp" matInput [formControlName]="'curp'" maxlength="18"
+                                autocapitalize="characters" />
+                            @if (c('curp').hasError('pattern')) {
+                            <mat-error>Ingresa una CURP válida (18 caracteres).</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- RFC -->
+                        <mat-form-field class="w-full">
+                            <mat-label>RFC (con homoclave)</mat-label>
+                            <input id="rfc" matInput [formControlName]="'rfc'" maxlength="13"
+                                autocapitalize="characters" />
+                            @if (c('rfc').hasError('pattern')) {
+                            <mat-error>Ingresa un RFC válido con homoclave (12 o 13 caracteres).</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- Dirección -->
+                        <mat-form-field class="w-full">
+                            <mat-label>Dirección</mat-label>
+                            <textarea id="address" matInput [formControlName]="'address'" rows="2"></textarea>
+                            @if (c('address').hasError('minlength')) {
+                            <mat-error>La dirección debe tener al menos 10 caracteres.</mat-error>
+                            }
+                            @if (c('address').hasError('maxlength')) {
+                            <mat-error>La dirección no puede exceder 120 caracteres.</mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+                </div>
 
                 <!-- Aceptación -->
                 <div class="mt-1.5 inline-flex w-full items-end">
                     <mat-checkbox class="-ml-2" [color]="'primary'" [formControlName]="'agreements'">
                         <span>Acepto los</span>
                         <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Términos</a>
-                        <span>y el</span>
+                        <span> y el</span>
                         <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Aviso de Privacidad</a>
                     </mat-checkbox>
                 </div>

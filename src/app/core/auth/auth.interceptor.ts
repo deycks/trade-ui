@@ -42,7 +42,11 @@ export const authInterceptor = (
     return next(newReq).pipe(
         catchError((error: unknown) => {
             // 3) Si backend responde 401, se cierra sesión
-            if (error instanceof HttpErrorResponse && error.status === 401) {
+            if (
+                error instanceof HttpErrorResponse &&
+                error.status === 401 &&
+                !isPublicAuthEndpoint
+            ) {
                 authService.signOut();
 
                 // Mejor que recargar a lo bestia: manda a sign-in (si tienes Router en AuthService)

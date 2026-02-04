@@ -9,7 +9,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="text-sm text-gray-500">Capital gestionado</div>
             <div class="mt-2 text-3xl font-semibold text-gray-900">
-                {{ summary.totalManagedCapital | currency:'MXN' }}
+                {{ summary.totalManagedCapital| currency:'MXN':'symbol':'1.2-2' }}
             </div>
         </div>
 
@@ -23,7 +23,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="text-sm text-gray-500">Rendimientos pendientes</div>
             <div class="mt-2 text-3xl font-semibold text-gray-900">
-                {{ summary.pendingYields | currency:'MXN' }}
+                {{ summary.pendingYields| currency:'MXN':'symbol':'1.2-2' }}
             </div>
         </div>
     </div>

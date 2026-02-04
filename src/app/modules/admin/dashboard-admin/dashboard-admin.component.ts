@@ -33,7 +33,6 @@ export class DashboardAdminComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe((data) => {
-                debugger;
                 this.summary = data;
                 this.isLoading = false;
                 this._cdr.markForCheck();

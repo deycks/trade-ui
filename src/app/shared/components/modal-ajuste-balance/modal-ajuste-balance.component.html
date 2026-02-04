@@ -1,0 +1,61 @@
+@if (isOpen) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="w-full max-w-lg rounded-lg bg-white shadow-lg">
+        <div class="flex items-center justify-between border-b px-6 py-4">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900">Ajustar balance</h3>
+                <div class="text-xs text-gray-500">
+                    {{ client?.name }} · {{ client?.id }}
+                </div>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600" (click)="onClose()">✕</button>
+        </div>
+
+        <form class="px-6 py-4 space-y-4" (ngSubmit)="onSubmit()" #adjustFormRef="ngForm">
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Monto</label>
+                <input type="number" [(ngModel)]="adjustForm.amount" name="amount" required
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Tipo</label>
+                <select [(ngModel)]="adjustForm.type" name="type" required
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="DEPOSIT">Depósito</option>
+                    <option value="WITHDRAWAL">Retiro</option>
+                    <option value="YIELD">Rendimiento</option>
+                    <option value="ADJUSTMENT">Ajuste</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Descripción</label>
+                <input type="text" [(ngModel)]="adjustForm.description" name="description"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-1">Fecha</label>
+                <input type="datetime-local" [(ngModel)]="adjustForm.createdAt" name="createdAt"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" (click)="onClose()"
+                    class="px-4 py-2 text-sm rounded-lg border border-gray-200">Cancelar</button>
+                <button type="submit" [disabled]="adjustFormRef.invalid || isSaving"
+                    class="px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50">
+                    @if (!isSaving) {
+                    Guardar
+                    }
+                    @if (isSaving) {
+                    Guardando...
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}

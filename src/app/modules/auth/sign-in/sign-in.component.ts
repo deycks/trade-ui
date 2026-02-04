@@ -48,6 +48,8 @@ export class AuthSignInComponent implements OnInit {
     signInForm: UntypedFormGroup;
     showAlert: boolean = false;
 
+    private readonly _rememberEmailKey = 'auth.rememberEmail';
+
     /**
      * Constructor
      */
@@ -68,13 +70,18 @@ export class AuthSignInComponent implements OnInit {
     ngOnInit(): void {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email: [
-                'andres-tic@hotmail.com',
-                [Validators.required, Validators.email],
-            ],
-            password: ['Password123!', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', Validators.required],
             rememberMe: [''],
         });
+
+        const rememberedEmail = localStorage.getItem(this._rememberEmailKey);
+        if (rememberedEmail) {
+            this.signInForm.patchValue({
+                email: rememberedEmail,
+                rememberMe: true,
+            });
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -100,6 +107,15 @@ export class AuthSignInComponent implements OnInit {
         const { rememberMe, ...credentials } = this.signInForm.value;
         this._authService.signIn(credentials).subscribe(
             () => {
+                if (rememberMe) {
+                    localStorage.setItem(
+                        this._rememberEmailKey,
+                        credentials.email
+                    );
+                } else {
+                    localStorage.removeItem(this._rememberEmailKey);
+                }
+
                 // Navigate to dashboard
                 this._router.navigateByUrl('/inicio');
             },
