@@ -1,4 +1,4 @@
-# Fuse - Admin template and Starter project for Angular
+# GBPlus
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli).
 
