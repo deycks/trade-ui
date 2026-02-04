@@ -10,7 +10,7 @@
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <div class="relative flex-1 sm:flex-none">
                     <input type="search" placeholder="Buscar por descripción o monto" [(ngModel)]="searchTerm"
-                        (input)="onSearch(searchTerm)" [disabled]="transactions.length === 0"
+                        (input)="onSearch(searchTerm)" [disabled]="totalTransactions === 0"
                         class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50" />
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -19,7 +19,7 @@
                     </svg>
                 </div>
 
-                <button (click)="exportTransactions()" [disabled]="transactions.length === 0"
+                <button (click)="exportTransactions()" [disabled]="totalTransactions === 0"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50 disabled:pointer-events-none">
                     Exportar
                 </button>
@@ -34,7 +34,7 @@
                 Tipo
             </label>
             <select id="type" name="type" [(ngModel)]="selectedType" (change)="onTypeChange(selectedType)"
-                [disabled]="transactions.length === 0"
+                [disabled]="totalTransactions === 0"
                 class="w-full sm:w-auto rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50">
                 <option value="" selected>Todos</option>
                 <option value="DEPOSIT">Depósito</option>

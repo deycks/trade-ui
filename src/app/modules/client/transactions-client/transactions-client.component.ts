@@ -26,6 +26,7 @@ export class TransactionsClientComponent implements OnInit, OnDestroy {
     searchTerm = '';
     selectedType = '';
     filteredTransactions: Transaction[] = [];
+    totalTransactions = 0;
 
     private _searchTerm$ = new BehaviorSubject<string>('');
     private _type$ = new BehaviorSubject<string>('');
@@ -70,6 +71,12 @@ export class TransactionsClientComponent implements OnInit, OnDestroy {
                 });
             })
         );
+
+        this.transactions$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((transactions) => {
+                this.totalTransactions = transactions?.length ?? 0;
+            });
 
         this.filteredTransactions$
             .pipe(takeUntil(this._unsubscribeAll))
