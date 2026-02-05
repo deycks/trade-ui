@@ -19,7 +19,7 @@ import {
 } from 'app/core/interfaces/dashboardClient.interface';
 import { DataPoint } from 'app/core/interfaces/dataChartSeriesDashboard.interface';
 import { ClientService } from 'app/core/services/client.service';
-import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
 

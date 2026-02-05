@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Client } from 'app/core/interfaces/user.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { UserService } from 'app/core/services/user.service';
-import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 
 @Component({

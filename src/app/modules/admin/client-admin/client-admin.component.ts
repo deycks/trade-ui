@@ -6,7 +6,7 @@ import { AdjustBalancePayload } from 'app/core/interfaces/balance.interface';
 import { Client } from 'app/core/interfaces/user.interface';
 import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service';
 import { ExportService } from 'app/core/services/export.service';
-import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { ModalAjusteBalanceComponent } from 'app/shared/components/modal-ajuste-balance/modal-ajuste-balance.component';
 import {
     Subject,

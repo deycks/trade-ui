@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LogsAdminResponse } from 'app/core/interfaces/logs.interface';
 import { ExportService } from 'app/core/services/export.service';
 import { LogsAdminService } from 'app/core/services/logs.service';
-import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 
 @Component({

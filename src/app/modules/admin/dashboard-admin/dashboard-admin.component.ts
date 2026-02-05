@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AdminDashboardSummary } from 'app/core/interfaces/dashboardAdmin.interface';
 import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service';
-import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { catchError, Observable, of, Subject, takeUntil } from 'rxjs';
 
 @Component({

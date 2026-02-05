@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Transaction } from 'app/core/interfaces/transaction.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { ExportService } from 'app/core/services/export.service';
-import { LoadingComponent } from 'app/layout/common/loading/loading.component';
+import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import {
     BehaviorSubject,
     combineLatest,

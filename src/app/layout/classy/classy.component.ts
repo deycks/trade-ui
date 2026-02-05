@@ -12,7 +12,7 @@ import { User } from 'app/core/interfaces/user.interface';
 import { NavigationService } from 'app/core/navigation/navigation.service';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { UserService } from 'app/core/services/user.service';
-import { UserComponent } from 'app/layout/common/user/user.component';
+import { UserComponent } from 'app/shared/components/user/user.component';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
