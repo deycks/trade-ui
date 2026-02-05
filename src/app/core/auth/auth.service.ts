@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/services/user.service';
@@ -66,7 +66,9 @@ export class AuthService {
         return this._httpClient
             .post<{
                 access_token: string;
-            }>(`${environment.apiUrl}/auth/login`, credentials)
+            }>(`${environment.apiUrl}/auth/login`, credentials, {
+                withCredentials: true,
+            })
             .pipe(
                 tap((loginResponse) => {
                     this.accessToken = loginResponse.access_token;
@@ -86,17 +88,56 @@ export class AuthService {
     }
 
     /**
+     * Refresh access token using HttpOnly cookie
+     */
+    refreshToken(): Observable<{ access_token: string }> {
+        return this._httpClient
+            .post<{
+                access_token: string;
+            }>(
+                `${environment.apiUrl}/auth/refresh`,
+                {},
+                { withCredentials: true }
+            )
+            .pipe(
+                tap((response) => {
+                    this.accessToken = response.access_token;
+                    this._authenticated = true;
+                })
+            );
+    }
+
+    /**
      * Sign out
      */
     signOut(): Observable<any> {
-        // Remove the access token from the local storage
-        localStorage.removeItem('accessToken');
+        try {
+            const headers = this.accessToken
+                ? new HttpHeaders({
+                      Authorization: `Bearer ${this.accessToken}`,
+                  })
+                : undefined;
 
-        // Set the authenticated flag to false
-        this._authenticated = false;
-
-        // Return the observable
-        return of(true);
+            return this._httpClient
+                .post(
+                    `${environment.apiUrl}/auth/logout`,
+                    {},
+                    { withCredentials: true, headers }
+                )
+                .pipe(
+                    tap(() => {
+                        localStorage.removeItem('accessToken');
+                        this._authenticated = false;
+                    }),
+                    catchError(() => {
+                        localStorage.removeItem('accessToken');
+                        this._authenticated = false;
+                        return of(true);
+                    })
+                );
+        } catch (error) {
+            console.log('Error during sign out:', error);
+        }
     }
 
     /**
@@ -146,11 +187,20 @@ export class AuthService {
             return of(false);
         }
 
-        // 3) Si expiró
+        // 3) Si expiró, intentar refresh con la cookie HttpOnly
         if (AuthUtils.isTokenExpired(token)) {
-            localStorage.removeItem('accessToken');
-            this._authenticated = false;
-            return of(false);
+            return this.refreshToken().pipe(
+                switchMap(() => this._userService.get()),
+                tap((user) => {
+                    this._userService.user = user;
+                }),
+                switchMap(() => of(true)),
+                catchError(() => {
+                    localStorage.removeItem('accessToken');
+                    this._authenticated = false;
+                    return of(false);
+                })
+            );
         }
 
         // 4) Token válido -> marcar autenticado y cargar perfil real

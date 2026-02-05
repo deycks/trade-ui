@@ -7,7 +7,7 @@ import {
 import { inject } from '@angular/core';
 import { AuthService } from 'app/core/auth/auth.service';
 import { AuthUtils } from 'app/core/auth/auth.utils';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, switchMap, throwError } from 'rxjs';
 
 export const authInterceptor = (
     req: HttpRequest<unknown>,
@@ -41,17 +41,29 @@ export const authInterceptor = (
 
     return next(newReq).pipe(
         catchError((error: unknown) => {
-            // 3) Si backend responde 401, se cierra sesión
             if (
                 error instanceof HttpErrorResponse &&
                 error.status === 401 &&
-                !isPublicAuthEndpoint
+                !isPublicAuthEndpoint &&
+                !req.headers.has('x-refresh')
             ) {
-                authService.signOut();
+                return authService.refreshToken().pipe(
+                    switchMap(() => {
+                        const retriedReq = req.clone({
+                            setHeaders: {
+                                Authorization: `Bearer ${authService.accessToken}`,
+                                'x-refresh': 'true',
+                            },
+                        });
 
-                // Mejor que recargar a lo bestia: manda a sign-in (si tienes Router en AuthService)
-                // Si no quieres tocar más, deja el reload:
-                location.reload();
+                        return next(retriedReq);
+                    }),
+                    catchError((refreshError) => {
+                        authService.signOut().subscribe();
+                        location.reload();
+                        return throwError(() => refreshError);
+                    })
+                );
             }
 
             return throwError(() => error);

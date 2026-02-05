@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Client } from 'app/core/interfaces/user.interface';
 import { ClientService } from 'app/core/services/client.service';
+import { UserService } from 'app/core/services/user.service';
 import { LoadingComponent } from 'app/layout/common/loading/loading.component';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 
@@ -13,10 +14,20 @@ import { catchError, of, Subject, takeUntil } from 'rxjs';
 export class ProfileComponent implements OnInit, OnDestroy {
     profile: Client | null = null;
     isLoading = true;
+    rol: string = '';
 
     private _unsubscribeAll = new Subject<void>();
 
-    constructor(private _clientService: ClientService) {}
+    constructor(
+        private _clientService: ClientService,
+        private _userService: UserService
+    ) {
+        this._userService.user$
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user) => {
+                this.rol = user?.role ?? '';
+            });
+    }
 
     ngOnInit(): void {
         this.isLoading = true;
