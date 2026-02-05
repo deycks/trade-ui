@@ -13,6 +13,7 @@ import { NavigationService } from 'app/core/navigation/navigation.service';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { UserService } from 'app/core/services/user.service';
 import { UserComponent } from 'app/shared/components/user/user.component';
+import { RoleBadgePipe } from 'app/shared/pipes/role-badge.pipe';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -26,6 +27,7 @@ import { Subject, takeUntil } from 'rxjs';
         MatIconModule,
         MatButtonModule,
         RouterOutlet,
+        RoleBadgePipe,
     ],
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {

@@ -685,7 +685,6 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
             };
         });
 
-        console.log(result);
         return result;
     }
 }

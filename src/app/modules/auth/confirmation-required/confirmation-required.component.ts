@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
-import { PortadaBienvenidaComponent } from '../portada-bienvenida/portada-bienvenida.component';
+import { PortadaBienvenidaComponent } from '../../../shared/components/portada-bienvenida/portada-bienvenida.component';
 
 @Component({
     selector: 'auth-confirmation-required',

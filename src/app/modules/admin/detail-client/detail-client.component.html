@@ -9,12 +9,7 @@
             <p class="text-sm text-gray-500">{{ user.id }}</p>
         </div>
 
-        <div class="flex items-center gap-2">
-
-            <a [routerLink]="['/clientes']" class="text-sm text-indigo-600 hover:underline">
-                Volver a clientes
-            </a>
-        </div>
+        <app-back-link [link]="['/clientes']" label="Volver a clientes"></app-back-link>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -30,13 +25,7 @@
                         <div class="text-xs uppercase tracking-wide text-gray-400">Cliente</div>
                         <div class="text-lg font-semibold text-gray-900">{{ user.name }}</div>
                         <div class="text-sm text-gray-500">{{ user.email }}</div>
-                        <span class="px-2 py-1 text-xs rounded-full" [ngClass]="{
-                            'bg-green-100 text-green-800': user.role === 'CLIENT',
-                            'bg-yellow-100 text-yellow-800': user.role === 'PROSPECT',
-                            'bg-blue-100 text-blue-800': user.role === 'ADMIN'
-                        }">
-                            {{ user.role }}
-                        </span>
+                        <span [innerHTML]="user.role | roleBadge"></span>
                     </div>
                 </div>
 
@@ -133,7 +122,7 @@
                     @for (t of user.transactions; track t.id) {
                     <tr>
                         <td class="px-6 py-3 text-sm text-gray-700">{{ t.createdAt | date:'dd/MM/yyyy' }}</td>
-                        <td class="px-6 py-3 text-sm text-gray-700">{{ t.type }}</td>
+                        <td class="px-6 py-3 text-sm text-gray-700">{{ t.type | transactionType }}</td>
                         <td class="px-6 py-3 text-sm text-gray-700">{{ t.description || '—' }}</td>
                         <td class="px-6 py-3 text-sm text-right font-semibold text-gray-900">
                             {{ +t.amount| currency:'MXN':'symbol':'1.2-2' }}
@@ -171,6 +160,9 @@
     <div class="rounded-lg border border-dashed border-gray-200 p-6 text-center w-full">
         <p class="text-lg font-medium text-gray-700 mb-2">Cliente no encontrado</p>
         <p class="text-sm text-gray-500">No se pudo cargar la información del cliente.</p>
+        <div class="mt-4 flex items-center justify-center">
+            <app-back-link [link]="['/clientes']" label="Volver a clientes"></app-back-link>
+        </div>
     </div>
     }
     }

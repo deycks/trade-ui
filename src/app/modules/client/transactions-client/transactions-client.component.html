@@ -28,8 +28,11 @@
     </div>
 
     <!-- Counter -->
-    <div class="text-sm text-gray-500 mb-4">
-        <div class="w-full sm:w-auto self-start mb-4">
+    <div class="text-sm text-gray-500 mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+            Encontradas {{ transactions.length }} transacciones
+        </div>
+        <div class="w-full sm:w-auto">
             <label for="type" class="block text-xs font-medium text-gray-500 mb-1">
                 Tipo
             </label>
@@ -43,7 +46,6 @@
                 <option value="ADJUSTMENT">Ajuste</option>
             </select>
         </div>
-        Encontradas {{ transactions.length }} transacciones
     </div>
 
     @if (transactions.length === 0) {
@@ -110,7 +112,7 @@
                             {{ t.createdAt | date:'dd/MM/yyyy' }}
                         </td>
                         <td class="px-6 py-3 text-sm text-gray-700">
-                            {{ t.type }}
+                            {{ t.type | transactionType }}
                         </td>
                         <td class="px-6 py-3 text-sm text-gray-700">
                             {{ t.description || '—' }}

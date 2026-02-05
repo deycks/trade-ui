@@ -8,6 +8,8 @@ import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service'
 import { ExportService } from 'app/core/services/export.service';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { ModalAjusteBalanceComponent } from 'app/shared/components/modal-ajuste-balance/modal-ajuste-balance.component';
+import { RoleBadgePipe } from 'app/shared/pipes/role-badge.pipe';
+
 import {
     Subject,
     debounceTime,
@@ -24,6 +26,7 @@ import {
         RouterModule,
         LoadingComponent,
         ModalAjusteBalanceComponent,
+        RoleBadgePipe,
     ],
     templateUrl: './client-admin.component.html',
 })

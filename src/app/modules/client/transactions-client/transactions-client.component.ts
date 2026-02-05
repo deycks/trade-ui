@@ -5,6 +5,7 @@ import { Transaction } from 'app/core/interfaces/transaction.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { ExportService } from 'app/core/services/export.service';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
+import { TransactionTypePipe } from 'app/shared/pipes/transaction-type.pipe';
 import {
     BehaviorSubject,
     combineLatest,
@@ -17,7 +18,7 @@ import {
 
 @Component({
     selector: 'app-transactions-client',
-    imports: [CommonModule, FormsModule, LoadingComponent],
+    imports: [CommonModule, FormsModule, LoadingComponent, TransactionTypePipe],
     templateUrl: './transactions-client.component.html',
 })
 export class TransactionsClientComponent implements OnInit, OnDestroy {

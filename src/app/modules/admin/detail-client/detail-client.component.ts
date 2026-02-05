@@ -6,8 +6,11 @@ import { AdjustBalancePayload } from 'app/core/interfaces/balance.interface';
 import { Client } from 'app/core/interfaces/user.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service';
+import { BackLinkComponent } from 'app/shared/components/back-link/back-link.component';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { ModalAjusteBalanceComponent } from 'app/shared/components/modal-ajuste-balance/modal-ajuste-balance.component';
+import { RoleBadgePipe } from 'app/shared/pipes/role-badge.pipe';
+import { TransactionTypePipe } from 'app/shared/pipes/transaction-type.pipe';
 import { of, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
@@ -15,9 +18,12 @@ import { of, Subject, switchMap, takeUntil } from 'rxjs';
     imports: [
         CommonModule,
         FormsModule,
+        BackLinkComponent,
         LoadingComponent,
         RouterModule,
         ModalAjusteBalanceComponent,
+        TransactionTypePipe,
+        RoleBadgePipe,
     ],
     templateUrl: './detail-client.component.html',
 })

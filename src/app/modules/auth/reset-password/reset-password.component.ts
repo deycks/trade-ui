@@ -18,7 +18,7 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { FuseValidators } from '@fuse/validators';
 import { AuthService } from 'app/core/auth/auth.service';
 import { finalize } from 'rxjs';
-import { PortadaBienvenidaComponent } from '../portada-bienvenida/portada-bienvenida.component';
+import { PortadaBienvenidaComponent } from '../../../shared/components/portada-bienvenida/portada-bienvenida.component';
 
 @Component({
     selector: 'auth-reset-password',
