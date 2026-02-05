@@ -245,7 +245,7 @@ export class AuthSignUpComponent implements OnInit, OnDestroy {
 
         this._authService.signUp(payload).subscribe(
             () => {
-                this._router.navigateByUrl('/confirmation-required');
+                this._router.navigateByUrl('/confirmacion-requerida');
             },
             () => {
                 this.signUpForm.enable();

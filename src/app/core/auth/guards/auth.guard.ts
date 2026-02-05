@@ -14,7 +14,7 @@ export const AuthGuard: CanActivateFn | CanActivateChildFn = (route, state) => {
                 // If the user is not authenticated...
                 if (!authenticated) {
                     // Redirect to the sign-in page
-                    const urlTree = router.parseUrl('sign-in');
+                    const urlTree = router.parseUrl('iniciar-sesion');
 
                     return of(urlTree);
                 }

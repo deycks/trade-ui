@@ -22,33 +22,33 @@ export const appRoutes: Route[] = [
         },
         children: [
             {
-                path: 'confirmation-required',
+                path: 'confirmacion-requerida',
                 loadChildren: () =>
                     import(
                         'app/modules/auth/confirmation-required/confirmation-required.routes'
                     ),
             },
             {
-                path: 'forgot-password',
+                path: 'olvide-contrasena',
                 loadChildren: () =>
                     import(
                         'app/modules/auth/forgot-password/forgot-password.routes'
                     ),
             },
             {
-                path: 'reset-password',
+                path: 'restablecer-contrasena',
                 loadChildren: () =>
                     import(
                         'app/modules/auth/reset-password/reset-password.routes'
                     ),
             },
             {
-                path: 'sign-in',
+                path: 'iniciar-sesion',
                 loadChildren: () =>
                     import('app/modules/auth/sign-in/sign-in.routes'),
             },
             {
-                path: 'sign-up',
+                path: 'registrarse',
                 loadChildren: () =>
                     import('app/modules/auth/sign-up/sign-up.routes'),
             },
@@ -66,12 +66,12 @@ export const appRoutes: Route[] = [
         },
         children: [
             {
-                path: 'sign-out',
+                path: 'cerrar-sesion',
                 loadChildren: () =>
                     import('app/modules/auth/sign-out/sign-out.routes'),
             },
             {
-                path: 'unlock-session',
+                path: 'desbloquear-sesion',
                 loadChildren: () =>
                     import(
                         'app/modules/auth/unlock-session/unlock-session.routes'

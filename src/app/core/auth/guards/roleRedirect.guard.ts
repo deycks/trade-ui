@@ -27,7 +27,7 @@ export const RoleRedirectGuard: CanActivateFn = () => {
                 return router.createUrlTree(['/dashboard']);
 
             // fallback: si no se pudo obtener user, a login (o a donde tú quieras)
-            return router.createUrlTree(['/sign-in']);
+            return router.createUrlTree(['/iniciar-sesion']);
         })
     );
 };
