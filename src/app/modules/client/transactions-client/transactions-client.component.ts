@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Transaction } from 'app/core/interfaces/transaction.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { ExportService } from 'app/core/services/export.service';
+import { EmptyStateComponent } from 'app/shared/components/empty-state/empty-state.component';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
-import { TransactionTypePipe } from 'app/shared/pipes/transaction-type.pipe';
+import { TransactionsTableComponent } from 'app/shared/components/transactions-table/transactions-table.component';
 import {
     BehaviorSubject,
     combineLatest,
@@ -18,7 +19,13 @@ import {
 
 @Component({
     selector: 'app-transactions-client',
-    imports: [CommonModule, FormsModule, LoadingComponent, TransactionTypePipe],
+    imports: [
+        CommonModule,
+        FormsModule,
+        EmptyStateComponent,
+        LoadingComponent,
+        TransactionsTableComponent,
+    ],
     templateUrl: './transactions-client.component.html',
 })
 export class TransactionsClientComponent implements OnInit, OnDestroy {

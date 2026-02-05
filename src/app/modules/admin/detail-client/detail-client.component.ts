@@ -7,10 +7,11 @@ import { Client } from 'app/core/interfaces/user.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { DashboardAdminService } from 'app/core/services/dashboardAdmin.service';
 import { BackLinkComponent } from 'app/shared/components/back-link/back-link.component';
+import { EmptyStateComponent } from 'app/shared/components/empty-state/empty-state.component';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { ModalAjusteBalanceComponent } from 'app/shared/components/modal-ajuste-balance/modal-ajuste-balance.component';
+import { TransactionsTableComponent } from 'app/shared/components/transactions-table/transactions-table.component';
 import { RoleBadgePipe } from 'app/shared/pipes/role-badge.pipe';
-import { TransactionTypePipe } from 'app/shared/pipes/transaction-type.pipe';
 import { of, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
@@ -22,8 +23,9 @@ import { of, Subject, switchMap, takeUntil } from 'rxjs';
         LoadingComponent,
         RouterModule,
         ModalAjusteBalanceComponent,
-        TransactionTypePipe,
+        TransactionsTableComponent,
         RoleBadgePipe,
+        EmptyStateComponent,
     ],
     templateUrl: './detail-client.component.html',
 })
