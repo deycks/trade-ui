@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import ApexCharts from 'apexcharts';
 import { ResponseSimulator } from 'app/core/interfaces/inputSimulator.interface';
 import { CommonFunctionsService } from 'app/core/services/commonFunctions';
 import { ExportService } from 'app/core/services/export.service';
@@ -87,26 +88,27 @@ export class SimulationComponent {
         const allValues = series.flatMap((s) =>
             (s.data ?? []).map((point) => point.value)
         );
-        const minValue = allValues.length ? Math.min(...allValues) : 0;
         const maxValue = allValues.length ? Math.max(...allValues) : 0;
         const minRounded = 0;
         const maxRounded = Math.ceil((maxValue + 250) / 100) * 100;
-        const tickAmount = Math.max(
-            2,
-            Math.round((maxRounded - minRounded) / 100) + 1
-        );
+        const range = Math.max(100, maxRounded - minRounded);
+        const tickAmount = range / 100 + 1;
 
         this.chartVisitorsVsPageViews = {
             chart: {
                 animations: {
                     enabled: true,
                 },
+                id: 'simulationChart',
                 fontFamily: 'inherit',
                 foreColor: 'inherit',
                 height: '100%',
                 type: 'area',
                 toolbar: {
                     show: true,
+                    tools: {
+                        download: false,
+                    },
                 },
                 zoom: {
                     enabled: false,
@@ -184,5 +186,26 @@ export class SimulationComponent {
         }));
 
         this._exportService.exportToExcel(exportData, 'proyeccion-mensual');
+    }
+
+    downloadChart(format: 'png' | 'svg'): void {
+        ApexCharts.exec('simulationChart', 'dataURI').then((data) => {
+            const uri = format === 'png' ? data.imgURI : data.blobURI;
+            this._downloadFile(uri, `grafica-simulacion.${format}`);
+        });
+    }
+
+    exportChartCsv(): void {
+        ApexCharts.exec('simulationChart', 'exportToCSV', {
+            filename: 'grafica-simulacion',
+        });
+    }
+
+    private _downloadFile(uri: string, filename: string): void {
+        const link = document.createElement('a');
+        link.href = uri;
+        link.download = filename;
+        link.click();
+        link.remove();
     }
 }

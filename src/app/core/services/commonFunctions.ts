@@ -18,7 +18,6 @@ export class CommonFunctionsService {
     }
 
     public _mapChartSeriesToApexSeries(input: ChartSeries[]): any {
-        debugger;
         const result = input.map((s) => {
             const points: DataPoint[] = (s.data ?? [])
                 .slice()

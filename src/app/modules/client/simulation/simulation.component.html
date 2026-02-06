@@ -26,7 +26,7 @@
                 <input type="number" [(ngModel)]="form.investmentRate" name="investmentRate" required step="0.01"
                     class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
             </div>
-            <div class="self-start sm:mt-5">
+            <div class="self-end sm:self-start sm:mt-5">
                 <button type="submit" [disabled]="isLoading"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50">
                     Simular
@@ -150,9 +150,23 @@
         <section>
             <div
                 class="bg-card ligth flex flex-auto flex-col overflow-hidden rounded-2xl shadow sm:col-span-2 lg:col-span-3">
-                <div class="m-6 mb-0 flex items-start justify-between">
+                <div class="m-6 mb-0 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div class="truncate text-lg font-medium leading-6 tracking-tight">
                         ¡Mira crecer tu inversión!
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" (click)="downloadChart('png')"
+                            class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                            Descargar PNG
+                        </button>
+                        <button type="button" (click)="downloadChart('svg')"
+                            class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                            Descargar SVG
+                        </button>
+                        <button type="button" (click)="exportChartCsv()"
+                            class="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                            Descargar CSV
+                        </button>
                     </div>
                 </div>
 
@@ -176,7 +190,7 @@
                 </div>
                 <button type="button" (click)="exportMonthlyProjection()"
                     [disabled]="!result?.monthlyProjection?.length"
-                    class="inline-flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50">
+                    class="self-end sm:self-auto inline-flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50">
                     Exportar a Excel
                 </button>
             </div>
