@@ -1,0 +1,244 @@
+<div class="p-4 sm:p-6 mx-auto w-full ">
+    <div class="p-4 sm:p-6 bg-card relative flex flex-auto flex-col overflow-hidden rounded-2xl p-6 pb-3 pr-3 shadow">
+        <h1 class="text-2xl font-semibold text-gray-900 mb-4">Simulador de inversión</h1>
+        <div class="mb-6 text-sm text-gray-500">
+            La simulación solo se podrá realizar con un máximo de 120 meses (10 años).
+        </div>
+
+        <form class="flex flex-col sm:flex-row sm:items-start gap-4" (ngSubmit)="submit()">
+            <div class="flex-1">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Monto inicial</label>
+                <input type="number" [(ngModel)]="form.initialAmount" name="initialAmount" required
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div class="flex-1">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Meses</label>
+                <input type="number" [(ngModel)]="form.months" name="months" required max="120"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                @if (errorMessage) {
+                <div class="mt-1 text-xs text-red-600 min-h-[16px]">{{ errorMessage }}</div>
+                } @else {
+                <div class="mt-1 text-xs text-transparent min-h-[16px]">&nbsp;</div>
+                }
+            </div>
+            <div class="flex-1">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Tasa (%)</label>
+                <input type="number" [(ngModel)]="form.investmentRate" name="investmentRate" required step="0.01"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div class="self-start sm:mt-5">
+                <button type="submit" [disabled]="isLoading"
+                    class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50">
+                    Simular
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    @if (isLoading) {
+    <div class="mt-6">
+        <app-loading></app-loading>
+    </div>
+    }
+
+    @if (!isLoading && result?.simulation) {
+
+    <div class="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- Izquierda -->
+        <section>
+            <div class="w-full grid-cols-1 gap-8 xl:grid-cols-2">
+                <div class="gap-8 sm:grid-flow-col xl:grid-flow-row">
+                    <div
+                        class="bg-card relative flex flex-auto flex-col overflow-hidden rounded-2xl p-6 pb-3 pr-3 shadow">
+                        <div class="absolute bottom-0 right-0 -m-6 h-24 w-24">
+                            <mat-icon class="text-green-500 opacity-25 icon-size-24 dark:text-green-400"
+                                [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="flex flex-col">
+                                <div class="truncate text-lg font-medium leading-6 tracking-tight">
+                                    Datos iniciales
+                                </div>
+                                <div class="text-sm font-medium text-green-600">
+                                    Ingresados por ti
+                                </div>
+                            </div>
+                        </div>
+                        <div class="-mx-6 mt-4 flex flex-row flex-wrap">
+                            <div class="mx-6 my-3 flex flex-col">
+                                <div class="text-secondary text-sm font-medium leading-none">
+                                    Monto inicial
+                                </div>
+                                <div class="mt-2 text-3xl font-medium leading-none">
+                                    {{ result.simulation.initialAmount | currency:'MXN':'symbol':'1.2-2' }}
+                                </div>
+                            </div>
+                            <div class="mx-6 my-3 flex flex-col">
+                                <div class="text-secondary text-sm font-medium leading-none">
+                                    Meses
+                                </div>
+                                <div class="mt-2 text-3xl font-medium leading-none">
+                                    {{ result.simulation.months }}
+                                </div>
+                            </div>
+                            <div class="mx-6 my-3 flex flex-col">
+                                <div class="text-secondary text-sm font-medium leading-none">
+                                    Tasa mensual
+                                </div>
+                                <div class="mt-2 text-3xl font-medium leading-none">
+                                    {{ result.simulation.monthlyRate / 100 | percent:'1.1-1' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8  w-full grid-cols-1 gap-8 xl:grid-cols-2">
+                <div class="gap-8 sm:grid-flow-col xl:grid-flow-row">
+                    <div
+                        class="bg-card relative flex flex-auto flex-col overflow-hidden rounded-2xl p-6 pb-3 pr-3 shadow">
+                        <div class="absolute bottom-0 right-0 -m-6 h-24 w-24">
+                            <mat-icon class="text-green-500 opacity-25 icon-size-24 dark:text-green-400"
+                                [svgIcon]="'heroicons_outline:chart-bar'"></mat-icon>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="flex flex-col">
+                                <div class="truncate text-lg font-medium leading-6 tracking-tight">
+                                    Resultado de la simulación
+                                </div>
+                                <div class="text-sm font-medium text-green-600">
+                                    Ganancia y balance estimados
+                                </div>
+                            </div>
+                        </div>
+                        <div class="-mx-6 mt-4 flex flex-row flex-wrap">
+                            <div class="mx-6 my-3 flex flex-col">
+                                <div class="text-secondary text-sm font-medium leading-none">
+                                    Ganancia total
+                                </div>
+                                <div class="mt-2 text-3xl font-medium leading-none">
+                                    {{ result.simulation.totalProfit | currency:'MXN':'symbol':'1.2-2' }}
+                                </div>
+                            </div>
+                            <div class="mx-6 my-3 flex flex-col">
+                                <div class="text-secondary text-sm font-medium leading-none">
+                                    Balance final
+                                </div>
+                                <div class="mt-2 text-3xl font-medium leading-none">
+                                    {{ result.simulation.finalBalance | currency:'MXN':'symbol':'1.2-2' }}
+                                </div>
+                            </div>
+                            <div class="mx-6 my-3 flex flex-col">
+                                <div class="text-secondary text-sm font-medium leading-none">
+                                    Tasa anual efectiva
+                                </div>
+                                <div class="mt-2 text-3xl font-medium leading-none">
+                                    {{ result.simulation.effectiveAnnualRate / 100 | percent:'1.1-1' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Derecha -->
+        <section>
+            <div
+                class="bg-card ligth flex flex-auto flex-col overflow-hidden rounded-2xl shadow sm:col-span-2 lg:col-span-3">
+                <div class="m-6 mb-0 flex items-start justify-between">
+                    <div class="truncate text-lg font-medium leading-6 tracking-tight">
+                        ¡Mira crecer tu inversión!
+                    </div>
+                </div>
+
+                <div class="mt-3 flex h-80 flex-auto flex-col">
+                    <apx-chart class="h-full w-full flex-auto" [chart]="chartVisitorsVsPageViews.chart"
+                        [colors]="chartVisitorsVsPageViews.colors" [dataLabels]="chartVisitorsVsPageViews.dataLabels"
+                        [grid]="chartVisitorsVsPageViews.grid" [legend]="chartVisitorsVsPageViews.legend"
+                        [series]="chartVisitorsVsPageViews.series" [stroke]="chartVisitorsVsPageViews.stroke"
+                        [tooltip]="chartVisitorsVsPageViews.tooltip" [xaxis]="chartVisitorsVsPageViews.xaxis"
+                        [yaxis]="chartVisitorsVsPageViews.yaxis"></apx-chart>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="mt-5 bg-card flex flex-auto flex-col overflow-hidden rounded-2xl shadow xl:col-span-2">
+        <div class="p-6">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div class="mr-4 truncate text-lg font-medium leading-6 tracking-tight">
+                    Proyección mensual
+                </div>
+                <button type="button" (click)="exportMonthlyProjection()"
+                    [disabled]="!result?.monthlyProjection?.length"
+                    class="inline-flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50">
+                    Exportar a Excel
+                </button>
+            </div>
+        </div>
+        <div class="mx-6 overflow-x-auto">
+            @if (result.monthlyProjection?.length) {
+            <table mat-table [dataSource]="result.monthlyProjection" class="w-full bg-transparent">
+                <ng-container matColumnDef="period">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                        Periodo
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="text-center">
+                        <span class="whitespace-nowrap">
+                            {{ row.period }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="balance">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                        Balance
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="text-center">
+                        <span class="whitespace-nowrap font-medium">
+                            {{ row.balance | currency:'MXN':'symbol':'1.2-2' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="profit">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                        Ganancia
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="text-center">
+                        <span class="whitespace-nowrap font-medium">
+                            {{ row.profit | currency:'MXN':'symbol':'1.2-2' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="accumulatedProfit">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                        Ganancia acumulada
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="text-center">
+                        <span class="whitespace-nowrap font-medium">
+                            {{ row.accumulatedProfit | currency:'MXN':'symbol':'1.2-2' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="order-row h-16"></tr>
+            </table>
+            } @else {
+            <div class="rounded-lg border border-dashed border-gray-200 p-4 text-sm text-gray-500">
+                Sin datos de proyección.
+            </div>
+            }
+
+        </div>
+    </div>
+    }
+
+</div>

@@ -9,7 +9,7 @@ import { EmptyRouteComponent } from './emptyRoute.component';
 
 export const appRoutes: Route[] = [
     { path: '', pathMatch: 'full', redirectTo: 'inicio' },
-    { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: 'inicio' },
+    // { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: 'inicio' },
 
     // Auth routes for guests
     {
@@ -115,6 +115,14 @@ export const appRoutes: Route[] = [
                     import(
                         'app/modules/client/transactions-client/transactions-client.routes'
                     ),
+            },
+            {
+                path: 'simulador',
+                canActivate: [RoleGuard],
+                canActivateChild: [RoleGuard],
+                data: { roles: ['CLIENT', 'PROSPECT'] },
+                loadChildren: () =>
+                    import('app/modules/client/simulation/simulation.routes'),
             },
             {
                 path: 'perfil',

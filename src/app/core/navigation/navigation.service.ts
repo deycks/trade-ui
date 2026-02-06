@@ -20,6 +20,13 @@ export const clientNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:list-bullet',
         link: '/movimientos',
     },
+    {
+        id: 'simulador',
+        title: 'Simulador',
+        type: 'basic',
+        icon: 'heroicons_outline:calculator',
+        link: '/simulador',
+    },
 ];
 
 export const adminNavigation: FuseNavigationItem[] = [

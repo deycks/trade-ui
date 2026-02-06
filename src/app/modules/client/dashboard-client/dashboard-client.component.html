@@ -33,20 +33,6 @@
                     Consulta tu saldo, ganancias y evolución mensual
                 </div>
             </div>
-
-            <div class="ml-6 flex items-center">
-
-                <!-- Actions menu (visible on xs) -->
-                <div class="sm:hidden">
-                    <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
-                        <mat-icon svgIcon="heroicons_outline:ellipsis-vertical"></mat-icon>
-                    </button>
-                    <mat-menu #actionsMenu="matMenu">
-                        <button mat-menu-item>Export</button>
-                        <button mat-menu-item>Settings</button>
-                    </mat-menu>
-                </div>
-            </div>
         </div>
 
         <div class="mt-8 grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -68,7 +54,7 @@
                                 </div>
                                 <mat-icon class="text-hint ml-1.5 icon-size-4"
                                     svgIcon="heroicons_mini:information-circle"
-                                    [matTooltip]="'Score is calculated by using the historical ratio between Page Views and Visitors. Best score is 1000, worst score is 0.'"></mat-icon>
+                                    [matTooltip]="'Saldo actual es el total disponible en tu cuenta, incluyendo capital y rendimientos acumulados.'"></mat-icon>
                             </div>
                             <div class="mt-2 flex items-start">
                                 <div class="text-4xl font-bold leading-none tracking-tight">
@@ -93,7 +79,7 @@
                                 </div>
                                 <mat-icon class="text-hint ml-1.5 icon-size-4"
                                     svgIcon="heroicons_mini:information-circle"
-                                    [matTooltip]="'Average Ratio is the average ratio between Page Views and Visitors'"></mat-icon>
+                                    [matTooltip]="'Las ganancias acumuladas son la suma de todos los rendimientos obtenidos hasta la fecha.'"></mat-icon>
                             </div>
                             <div class="mt-2 flex items-start">
                                 <div class="text-4xl font-bold leading-none tracking-tight">
@@ -117,7 +103,7 @@
                                 </div>
                                 <mat-icon class="text-hint ml-1.5 icon-size-4"
                                     svgIcon="heroicons_mini:information-circle"
-                                    [matTooltip]="'Predicted Ratio is calculated by using historical ratio, current trends and your goal targets.'"></mat-icon>
+                                    [matTooltip]="'La ganancia del mes corresponde al rendimiento generado únicamente durante el mes actual.'"></mat-icon>
                             </div>
                             <div class="mt-2 flex items-start">
                                 <div class="text-4xl font-bold leading-none tracking-tight">

@@ -13,12 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import {
-    ChartSeries,
-    ResponseDashboardClient,
-} from 'app/core/interfaces/dashboardClient.interface';
-import { DataPoint } from 'app/core/interfaces/dataChartSeriesDashboard.interface';
+import { ResponseDashboardClient } from 'app/core/interfaces/dashboardClient.interface';
 import { ClientService } from 'app/core/services/client.service';
+import { CommonFunctionsService } from 'app/core/services/commonFunctions';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
@@ -62,7 +59,8 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
     constructor(
         private _clientService: ClientService,
         private _router: Router,
-        private _cdr: ChangeDetectorRef
+        private _cdr: ChangeDetectorRef,
+        private commonService: CommonFunctionsService
     ) {}
 
     // Helpers para el template
@@ -244,7 +242,7 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
         this.chartVisitorsVsPageViews = {
             chart: {
                 animations: {
-                    enabled: false,
+                    enabled: true,
                 },
                 fontFamily: 'inherit',
                 foreColor: 'inherit',
@@ -276,7 +274,9 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
             legend: {
                 show: false,
             },
-            series: this._mapChartSeriesToApexSeries(balanceAndInvestedCapital),
+            series: this.commonService._mapChartSeriesToApexSeries(
+                balanceAndInvestedCapital
+            ),
             stroke: {
                 curve: 'smooth',
                 width: 2,
@@ -317,374 +317,5 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
                 tickAmount: 5,
             },
         };
-
-        /**
-        // Conversions
-        this.chartConversions = {
-            chart: {
-                animations: {
-                    enabled: false,
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'area',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#38BDF8'],
-            fill: {
-                colors: ['#38BDF8'],
-                opacity: 0.5,
-            },
-            series: this.data.conversions.series,
-            stroke: {
-                curve: 'smooth',
-            },
-            tooltip: {
-                followCursor: true,
-                theme: 'dark',
-            },
-            xaxis: {
-                type: 'category',
-                categories: this.data.conversions.labels,
-            },
-            yaxis: {
-                labels: {
-                    formatter: (val): string => val.toString(),
-                },
-            },
-        };
-
-        // Impressions
-        this.chartImpressions = {
-            chart: {
-                animations: {
-                    enabled: false,
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'area',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#34D399'],
-            fill: {
-                colors: ['#34D399'],
-                opacity: 0.5,
-            },
-            series: this.data.impressions.series,
-            stroke: {
-                curve: 'smooth',
-            },
-            tooltip: {
-                followCursor: true,
-                theme: 'dark',
-            },
-            xaxis: {
-                type: 'category',
-                categories: this.data.impressions.labels,
-            },
-            yaxis: {
-                labels: {
-                    formatter: (val): string => val.toString(),
-                },
-            },
-        };
-
-        // Visits
-        this.chartVisits = {
-            chart: {
-                animations: {
-                    enabled: false,
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'area',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#FB7185'],
-            fill: {
-                colors: ['#FB7185'],
-                opacity: 0.5,
-            },
-            series: this.data.visits.series,
-            stroke: {
-                curve: 'smooth',
-            },
-            tooltip: {
-                followCursor: true,
-                theme: 'dark',
-            },
-            xaxis: {
-                type: 'category',
-                categories: this.data.visits.labels,
-            },
-            yaxis: {
-                labels: {
-                    formatter: (val): string => val.toString(),
-                },
-            },
-        };
-
-
-
-        // New vs. returning
-        this.chartNewVsReturning = {
-            chart: {
-                animations: {
-                    speed: 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'donut',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#3182CE', '#63B3ED'],
-            labels: this.data.newVsReturning.labels,
-            plotOptions: {
-                pie: {
-                    customScale: 0.9,
-                    expandOnClick: false,
-                    donut: {
-                        size: '70%',
-                    },
-                },
-            },
-            series: this.data.newVsReturning.series,
-            states: {
-                hover: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip: {
-                enabled: true,
-                fillSeriesColor: false,
-                theme: 'dark',
-                custom: ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                </div>`,
-            },
-        };
-
-        // Gender
-        this.chartGender = {
-            chart: {
-                animations: {
-                    speed: 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'donut',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#319795', '#4FD1C5'],
-            labels: this.data.gender.labels,
-            plotOptions: {
-                pie: {
-                    customScale: 0.9,
-                    expandOnClick: false,
-                    donut: {
-                        size: '70%',
-                    },
-                },
-            },
-            series: this.data.gender.series,
-            states: {
-                hover: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip: {
-                enabled: true,
-                fillSeriesColor: false,
-                theme: 'dark',
-                custom: ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                     <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                     <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                     <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                 </div>`,
-            },
-        };
-
-        // Age
-        this.chartAge = {
-            chart: {
-                animations: {
-                    speed: 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'donut',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#DD6B20', '#F6AD55'],
-            labels: this.data.age.labels,
-            plotOptions: {
-                pie: {
-                    customScale: 0.9,
-                    expandOnClick: false,
-                    donut: {
-                        size: '70%',
-                    },
-                },
-            },
-            series: this.data.age.series,
-            states: {
-                hover: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip: {
-                enabled: true,
-                fillSeriesColor: false,
-                theme: 'dark',
-                custom: ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                </div>`,
-            },
-        };
-
-        // Language
-        this.chartLanguage = {
-            chart: {
-                animations: {
-                    speed: 400,
-                    animateGradually: {
-                        enabled: false,
-                    },
-                },
-                fontFamily: 'inherit',
-                foreColor: 'inherit',
-                height: '100%',
-                type: 'donut',
-                sparkline: {
-                    enabled: true,
-                },
-            },
-            colors: ['#805AD5', '#B794F4'],
-            labels: this.data.language.labels,
-            plotOptions: {
-                pie: {
-                    customScale: 0.9,
-                    expandOnClick: false,
-                    donut: {
-                        size: '70%',
-                    },
-                },
-            },
-            series: this.data.language.series,
-            states: {
-                hover: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-                active: {
-                    filter: {
-                        type: 'none',
-                    },
-                },
-            },
-            tooltip: {
-                enabled: true,
-                fillSeriesColor: false,
-                theme: 'dark',
-                custom: ({
-                    seriesIndex,
-                    w,
-                }): string => `<div class="flex items-center h-8 min-h-8 max-h-8 px-3">
-                                                    <div class="w-3 h-3 rounded-full" style="background-color: ${w.config.colors[seriesIndex]};"></div>
-                                                    <div class="ml-2 text-md leading-none">${w.config.labels[seriesIndex]}:</div>
-                                                    <div class="ml-2 text-md font-bold leading-none">${w.config.series[seriesIndex]}%</div>
-                                                </div>`,
-            },
-        };
-
-         */
-    }
-
-    private _mapChartSeriesToApexSeries(input: ChartSeries[]): any {
-        const result = input.map((s) => {
-            const points: DataPoint[] = (s.data ?? [])
-                .slice()
-                // ordena por period (YYYY-MM) para que la línea no “brinque”
-                .sort((a, b) => a.period.localeCompare(b.period))
-                .map(({ period, value }) => {
-                    const [yearStr, monthStr] = period.split('-');
-                    const year = Number(yearStr);
-                    const month = Number(monthStr) - 1; // Date month = 0..11
-
-                    return {
-                        x: new Date(year, month, 1),
-                        y: value,
-                    };
-                });
-
-            return {
-                name: s.label, // o s.key si prefieres
-                data: points,
-            };
-        });
-
-        return result;
     }
 }
