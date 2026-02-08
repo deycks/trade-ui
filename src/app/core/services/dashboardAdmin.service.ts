@@ -31,13 +31,13 @@ export class DashboardAdminService {
             );
     }
 
-    getListClients(): Observable<Client[]> {
+    getListUsers(): Observable<Client[]> {
         return this._httpClient
             .get<Client[]>(`${environment.apiUrl}/admin/users`)
             .pipe(
                 retry(2),
                 catchError(
-                    this._service.handleError<Client[]>('getListClients', [])
+                    this._service.handleError<Client[]>('getListUsers', [])
                 )
             );
     }

@@ -1,0 +1,58 @@
+<div class="p-6 w-full max-w-[720px]">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-900">Detalle de log</h2>
+        <button mat-button mat-dialog-close class="text-gray-600">Cerrar</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div>
+            <div class="text-xs uppercase text-gray-500">Acción</div>
+            <div class="text-gray-900 break-words">{{ data.action || 'N/A' }}</div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Fecha</div>
+            <div class="text-gray-900 break-words">
+                {{ data.createdAt | date: 'medium' }}
+            </div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Admin</div>
+            <div class="text-gray-900 break-words">{{ data.admin?.name || 'N/A' }}</div>
+            <div class="text-gray-500 break-words">{{ data.admin?.email || 'N/A' }}</div>
+            <div class="text-gray-500 break-words">{{ data.adminIp || 'N/A' }}</div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Usuario afectado</div>
+            <div class="text-gray-900 break-words">{{ data.affectedUser?.name || 'N/A' }}</div>
+            <div class="text-gray-500 break-words">{{ data.affectedUser?.email || 'N/A' }}</div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Transacción</div>
+            <div class="text-gray-900 break-words">{{ data.transactionId || 'N/A' }}</div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Monto</div>
+            <div class="text-gray-900 break-words">{{ data.amount ?? 'N/A' }}</div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Balance antes</div>
+            <div class="text-gray-900 break-words">{{ data.balanceBefore ?? 'N/A' }}</div>
+        </div>
+
+        <div>
+            <div class="text-xs uppercase text-gray-500">Balance después</div>
+            <div class="text-gray-900 break-words">{{ data.balanceAfter ?? 'N/A' }}</div>
+        </div>
+
+        <div class="sm:col-span-2">
+            <div class="text-xs uppercase text-gray-500">Detalles</div>
+            <div class="text-gray-900 break-words">{{ data.details || 'Sin detalles' }}</div>
+        </div>
+    </div>
+</div>

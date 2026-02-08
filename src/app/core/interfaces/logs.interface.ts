@@ -4,6 +4,18 @@ export interface LogsAdminResponse {
     recentLogs: RecentLog[];
 }
 
+export interface LogsPaginadoResponse {
+    data: RecentLog[];
+    pagination: PaginationMeta;
+}
+
+export interface PaginationMeta {
+    limit: number;
+    page: number;
+    total: number;
+    totalPages: number;
+}
+
 export interface LogsByAction {
     _count: Count;
     action: string;

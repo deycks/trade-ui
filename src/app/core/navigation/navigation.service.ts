@@ -38,11 +38,11 @@ export const adminNavigation: FuseNavigationItem[] = [
         link: '/admin',
     },
     {
-        id: 'clientes',
-        title: 'Clientes',
+        id: 'usuarios',
+        title: 'Usuarios',
         type: 'basic',
         icon: 'heroicons_outline:user-group',
-        link: '/clientes',
+        link: '/usuarios',
     },
     {
         id: 'logs',

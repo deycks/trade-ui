@@ -66,7 +66,7 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
                     this.isLoading = true;
                     return term.trim()
                         ? this._dashboardAdminService.searchUsers(term)
-                        : this._dashboardAdminService.getListClients();
+                        : this._dashboardAdminService.getListUsers();
                 }),
                 takeUntil(this._unsubscribeAll)
             )
@@ -85,7 +85,7 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
     loadClients(): void {
         this.isLoading = true;
         this._dashboardAdminService
-            .getListClients()
+            .getListUsers()
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe({
                 next: (clients) => {

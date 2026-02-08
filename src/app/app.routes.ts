@@ -143,7 +143,7 @@ export const appRoutes: Route[] = [
                     ),
             },
             {
-                path: 'clientes',
+                path: 'usuarios',
                 pathMatch: 'full',
                 canActivate: [RoleGuard],
                 canActivateChild: [RoleGuard],
