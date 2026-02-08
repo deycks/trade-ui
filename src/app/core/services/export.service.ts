@@ -26,9 +26,26 @@ export class ExportService {
         });
 
         const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        worksheet['!cols'] = this._getColumnWidths(formattedData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
         XLSX.writeFile(workbook, `${fileName}-${timestamp}.xlsx`);
+    }
+
+    private _getColumnWidths(
+        data: Array<Record<string, string>>
+    ): Array<{ wch: number }> {
+        const headers = data.length ? Object.keys(data[0]) : [];
+        const widths = headers.map((header) => header.length);
+
+        data.forEach((row) => {
+            headers.forEach((header, index) => {
+                const cellValue = row[header] ?? '';
+                widths[index] = Math.max(widths[index], String(cellValue).length);
+            });
+        });
+
+        return widths.map((wch) => ({ wch: Math.min(Math.max(wch + 2, 10), 60) }));
     }
 
     private _formatValue(value: unknown): string {

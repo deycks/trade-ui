@@ -31,7 +31,7 @@ export class RoleBadgePipe implements PipeTransform {
                 label = normalized;
         }
 
-        const html = `<span class="px-2 py-1 text-xs rounded-full ${classes}">${label}</span>`;
+        const html = `<span class="px-2 py-1 text-xm rounded-full ${classes}">${label}</span>`;
         return this._sanitizer.bypassSecurityTrustHtml(html);
     }
 }

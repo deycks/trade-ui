@@ -22,10 +22,7 @@
                     <div class="text-base text-gray-500">{{ profile.email }}</div>
                 </div>
             </div>
-            <span
-                class="inline-flex items-center rounded-full bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700">
-                {{ rol }}
-            </span>
+            <span [innerHTML]="rol | roleBadge"></span>
         </div>
 
         <div class="grid grid-cols-1 gap-8 p-8 lg:grid-cols-3">

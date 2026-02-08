@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { AdjustBalancePayload } from 'app/core/interfaces/balance.interface';
 import { Client } from 'app/core/interfaces/user.interface';
@@ -27,6 +28,7 @@ import {
         LoadingComponent,
         ModalAjusteBalanceComponent,
         RoleBadgePipe,
+        MatTableModule,
     ],
     templateUrl: './client-admin.component.html',
 })
@@ -34,6 +36,14 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
     clients: Client[] = [];
     isLoading = true;
     searchTerm = '';
+    displayedColumns: string[] = [
+        'cliente',
+        'rol',
+        'balance',
+        'tasa',
+        'registro',
+        'acciones',
+    ];
 
     private _searchSubject = new Subject<string>();
     private _unsubscribeAll = new Subject<void>();

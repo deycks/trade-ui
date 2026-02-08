@@ -4,11 +4,12 @@ import { Client } from 'app/core/interfaces/user.interface';
 import { ClientService } from 'app/core/services/client.service';
 import { UserService } from 'app/core/services/user.service';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
+import { RoleBadgePipe } from 'app/shared/pipes/role-badge.pipe';
 import { catchError, of, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-profile',
-    imports: [CommonModule, LoadingComponent],
+    imports: [CommonModule, LoadingComponent, RoleBadgePipe],
     templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit, OnDestroy {

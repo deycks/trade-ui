@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatTableModule } from '@angular/material/table';
 import { LogsAdminResponse } from 'app/core/interfaces/logs.interface';
 import { ExportService } from 'app/core/services/export.service';
 import { LogsAdminService } from 'app/core/services/logs.service';
@@ -8,12 +9,21 @@ import { catchError, of, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-logs',
-    imports: [CommonModule, LoadingComponent],
+    imports: [CommonModule, LoadingComponent, MatTableModule],
     templateUrl: './logs.component.html',
 })
 export class LogsComponent implements OnInit, OnDestroy {
     logs: LogsAdminResponse | null = null;
     isLoading = true;
+    displayedColumnsRecent: string[] = [
+        'action',
+        'admin',
+        'affectedUser',
+        'operation',
+        'details',
+        'date',
+    ];
+    displayedColumnsSummary: string[] = ['action', 'total'];
 
     private _unsubscribeAll = new Subject<void>();
 
@@ -50,10 +60,20 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         const exportData = this.logs.recentLogs.map((log) => ({
+            Id: log.id ?? '',
             Accion: log.action ?? '',
-            Admin: log.admin?.name ?? 'N/A',
-            EmailAdmin: log.admin?.email ?? 'N/A',
             Detalles: log.details ?? '',
+            AdminId: log.adminId ?? '',
+            AdminNombre: log.admin?.name ?? 'N/A',
+            AdminEmail: log.admin?.email ?? 'N/A',
+            AdminIp: log.adminIp ?? '',
+            UsuarioAfectadoId: log.affectedUserId ?? '',
+            UsuarioAfectadoNombre: log.affectedUser?.name ?? 'N/A',
+            UsuarioAfectadoEmail: log.affectedUser?.email ?? 'N/A',
+            TransaccionId: log.transactionId ?? '',
+            Monto: log.amount ?? '',
+            BalanceAntes: log.balanceBefore ?? '',
+            BalanceDespues: log.balanceAfter ?? '',
             Fecha: log.createdAt
                 ? new Date(log.createdAt).toLocaleString('es-MX')
                 : '',

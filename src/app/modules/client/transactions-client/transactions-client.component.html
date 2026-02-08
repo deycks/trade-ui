@@ -1,52 +1,9 @@
-<div class="p-4 sm:p-6 mx-auto w-full ">
-    <div
-        class="p-4 sm:p-6 bg-card relative flex flex-auto flex-col overflow-hidden rounded-2xl p-6 pb-3 pr-3 shadow min-h-[420px]">
-        @if (filteredTransactions$ | async; as transactions) {
+<div class="mx-auto w-full ">
+    <div class="relative flex flex-auto flex-col overflow-hidden rounded-2xl p-6 pb-3 pr-3 shadow min-h-[420px]">
+        @if (transactions$ | async; as transactions) {
 
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
-            <h1 class="text-2xl font-semibold text-gray-900">Movimientos</h1>
-
-            <div class="flex flex-col gap-2 w-full sm:w-auto">
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <div class="relative flex-1 sm:flex-none">
-                        <input type="search" placeholder="Buscar por descripción o monto" [(ngModel)]="searchTerm"
-                            (input)="onSearch(searchTerm)" [disabled]="totalTransactions === 0"
-                            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50" />
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-                        </svg>
-                    </div>
-
-                    <button (click)="exportTransactions()" [disabled]="totalTransactions === 0"
-                        class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm disabled:opacity-50 disabled:pointer-events-none">
-                        Exportar
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Counter -->
-        <div class="text-sm text-gray-500 mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-            <div>
-                Encontradas {{ transactions.length }} transacciones
-            </div>
-            <div class="w-full sm:w-auto">
-                <label for="type" class="block text-xs font-medium text-gray-500 mb-1">
-                    Tipo
-                </label>
-                <select id="type" name="type" [(ngModel)]="selectedType" (change)="onTypeChange(selectedType)"
-                    [disabled]="totalTransactions === 0"
-                    class="w-full sm:w-auto rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50">
-                    <option value="" selected>Todos</option>
-                    <option value="DEPOSIT">Depósito</option>
-                    <option value="WITHDRAWAL">Retiro</option>
-                    <option value="YIELD">Rendimiento</option>
-                    <option value="ADJUSTMENT">Ajuste</option>
-                </select>
-            </div>
+        <div class="text-3xl font-semibold leading-8 tracking-tight mb-2">
+            Movimientos
         </div>
 
         @if (transactions.length === 0) {

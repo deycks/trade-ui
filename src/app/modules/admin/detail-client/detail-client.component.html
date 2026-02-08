@@ -1,4 +1,4 @@
-<div class="p-4 sm:p-6 mx-auto w-full card-shadow bg-white rounded-lg m-4 relative">
+<div class="p-4 sm:p-6 mx-auto w-full card-shadow rounded-lg m-4 relative">
     @if (isLoading) {
     <app-loading></app-loading>
     } @else {
@@ -97,14 +97,11 @@
         </div>
     </div>
 
-    <div class="mb-4 text-sm text-gray-500">
-        Transacciones: {{ user.transactions?.length || 0 }}
-    </div>
-
     @if ((user.transactions?.length || 0) === 0) {
     <app-empty-state title="No hay transacciones" description="Este cliente aún no tiene movimientos.">
     </app-empty-state>
     } @else {
+    <h1 class="text-2xl font-semibold text-gray-900 mb-4">Movimientos</h1>
     <app-transactions-table [transactions]="user.transactions || []"></app-transactions-table>
     }
     } @else {

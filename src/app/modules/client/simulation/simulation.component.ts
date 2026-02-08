@@ -25,10 +25,10 @@ import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 })
 export class SimulationComponent {
     isLoading = false;
-    result: ResponseSimulator = null;
+    result: ResponseSimulator | null = null;
     errorMessage = '';
     displayedColumns = ['period', 'balance', 'profit', 'accumulatedProfit'];
-    chartVisitorsVsPageViews: ApexOptions;
+    chartVisitorsVsPageViews: ApexOptions = {};
     form = {
         initialAmount: 100,
         months: 36,
@@ -58,7 +58,9 @@ export class SimulationComponent {
                 this.isLoading = false;
             },
             error: (err) => {
-                this.result = err;
+                console.error('Error generando simulación:', err);
+                this.errorMessage =
+                    'Ocurrió un error al generar la simulación.';
                 this.isLoading = false;
             },
         });
@@ -70,6 +72,10 @@ export class SimulationComponent {
      */
     private _prepareChartData(): void {
         // Visitors vs Page Views
+        if (!this.result?.chart?.series?.length) {
+            return;
+        }
+
         const series = this.result.chart.series.filter(
             (s) => s.key == 'balance'
         );
@@ -92,7 +98,10 @@ export class SimulationComponent {
         const minRounded = 0;
         const maxRounded = Math.ceil((maxValue + 250) / 100) * 100;
         const range = Math.max(100, maxRounded - minRounded);
-        const tickAmount = range / 100 + 1;
+        const tickAmount = Math.min(
+            6,
+            Math.max(3, Math.round(range / 1000) + 2)
+        );
 
         this.chartVisitorsVsPageViews = {
             chart: {
@@ -164,6 +173,15 @@ export class SimulationComponent {
                     style: {
                         colors: 'var(--fuse-text-secondary)',
                     },
+                    formatter: (value: number) => {
+                        if (Math.abs(value) >= 1_000_000) {
+                            return `${(value / 1_000_000).toFixed(1)}M`;
+                        }
+                        if (Math.abs(value) >= 1_000) {
+                            return `${(value / 1_000).toFixed(1)}k`;
+                        }
+                        return `${Math.round(value)}`;
+                    },
                 },
                 max: maxRounded,
                 min: minRounded,
@@ -189,10 +207,12 @@ export class SimulationComponent {
     }
 
     downloadChart(format: 'png' | 'svg'): void {
-        ApexCharts.exec('simulationChart', 'dataURI').then((data) => {
-            const uri = format === 'png' ? data.imgURI : data.blobURI;
-            this._downloadFile(uri, `grafica-simulacion.${format}`);
-        });
+        ApexCharts.exec('simulationChart', 'dataURI').then(
+            (data: { imgURI: string; blobURI: string }) => {
+                const uri = format === 'png' ? data.imgURI : data.blobURI;
+                this._downloadFile(uri, `grafica-simulacion.${format}`);
+            }
+        );
     }
 
     exportChartCsv(): void {
