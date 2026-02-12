@@ -35,9 +35,15 @@
             </div>
 
             <div>
-                <label class="block text-sm text-gray-600 mb-1">Descripción</label>
-                <input type="text" [(ngModel)]="adjustForm.description" name="description"
+                <label class="block text-sm text-gray-600 mb-1 font-semibold">
+                    Descripción <span class="text-red-500">*</span>
+                </label>
+                <input type="text" [(ngModel)]="adjustForm.description" name="description" required minlength="10"
+                    #descriptionModel="ngModel"
                     class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                @if (descriptionModel.invalid && (descriptionModel.dirty || descriptionModel.touched)) {
+                <p class="mt-1 text-xs text-red-500">La descripción debe tener al menos 10 caracteres.</p>
+                }
             </div>
 
             <div>

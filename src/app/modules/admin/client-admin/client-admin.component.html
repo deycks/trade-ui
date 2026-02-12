@@ -114,6 +114,35 @@
                         {{ client.createdAt | date:'dd/MM/yyyy' }}
                     </td>
                 </ng-container>
+                <ng-container matColumnDef="pendingTransfers">
+                    <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-center">
+                        Transferencias pendientes
+                    </th>
+                    <td mat-cell *matCellDef="let client" class="px-6 py-3 text-center">
+                        <ng-container
+                            *ngIf="client.pendingTransfersCount !== undefined && (client.role == 'CLIENT' || client.role == 'PROSPECT')">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold"
+                                [ngClass]="{
+                                    'bg-yellow-100 text-yellow-800': client.hasPendingTransfers,
+                                    'bg-green-100 text-green-800': !client.hasPendingTransfers
+                                }">
+                                <svg *ngIf="client.hasPendingTransfers" class="w-4 h-4 text-yellow-500" fill="none"
+                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+                                </svg>
+                                <svg *ngIf="!client.hasPendingTransfers" class="w-4 h-4 text-green-500" fill="none"
+                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                {{ client.pendingTransfersCount || 0 }}
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="client.pendingTransfersCount === undefined">
+                            —
+                        </ng-container>
+                    </td>
+                </ng-container>
 
                 <!-- Acciones -->
                 <ng-container matColumnDef="acciones">
@@ -169,6 +198,26 @@
 
                 <div class="mt-3 text-xs text-gray-500">
                     Registrado: {{ client.createdAt | date:'dd/MM/yyyy' }}
+                </div>
+                <div *ngIf="client.role == 'CLIENT' || client.role == 'PROSPECT'" class="mt-2">
+                    <div class="flex items-center justify-between gap-2 text-xs">
+                        <span class="text-gray-500">Transferencias pendientes:</span>
+                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full font-semibold" [ngClass]="{
+                                'bg-yellow-100 text-yellow-800': client.hasPendingTransfers,
+                                'bg-green-100 text-green-800': !client.hasPendingTransfers
+                            }">
+                            <svg *ngIf="client.hasPendingTransfers" class="w-4 h-4 text-yellow-500" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+                            </svg>
+                            <svg *ngIf="!client.hasPendingTransfers" class="w-4 h-4 text-green-500" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ client.pendingTransfersCount || 0 }}
+                        </span>
+                    </div>
                 </div>
                 @if(client.role == 'CLIENT' || client.role == 'PROSPECT') {
                 <div class="mt-4 flex justify-end gap-3">

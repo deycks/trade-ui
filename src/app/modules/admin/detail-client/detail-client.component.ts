@@ -130,17 +130,14 @@ export class DetailClientComponent implements OnInit, OnDestroy {
             return;
         }
 
+        const payload = this._buildUpdatePayload();
+        if (!payload) {
+            return;
+        }
+
         this.isSaving = true;
         this._clientService
-            .updateAdminUserClient(this.userId, {
-                email: this.editForm.email,
-                name: this.editForm.name,
-                phone: this.editForm.phone,
-                curp: this.editForm.curp,
-                rfc: this.editForm.rfc,
-                address: this.editForm.address,
-                investmentRate: this.editForm.investmentRate ?? 0,
-            })
+            .updateAdminUserClient(this.userId, payload)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe({
                 next: (updatedUser) => {
@@ -160,6 +157,53 @@ export class DetailClientComponent implements OnInit, OnDestroy {
                     this.isSaving = false;
                 },
             });
+    }
+
+    private _buildUpdatePayload(): Partial<Client> | null {
+        const currentUser = this.user;
+        if (!currentUser) {
+            return null;
+        }
+
+        const payload: Partial<Client> = {};
+
+        if (this.editForm.email !== (currentUser.email ?? '')) {
+            payload.email = this.editForm.email;
+        }
+
+        if (this.editForm.name !== (currentUser.name ?? '')) {
+            payload.name = this.editForm.name;
+        }
+
+        if (this.editForm.phone !== (currentUser.phone ?? '')) {
+            payload.phone = this.editForm.phone;
+        }
+
+        if (this.editForm.curp !== (currentUser.curp ?? '')) {
+            payload.curp = this.editForm.curp;
+        }
+
+        if (this.editForm.rfc !== (currentUser.rfc ?? '')) {
+            payload.rfc = this.editForm.rfc;
+        }
+
+        if (this.editForm.address !== (currentUser.address ?? '')) {
+            payload.address = this.editForm.address;
+        }
+
+        const currentInvestmentRate =
+            currentUser.investmentRate !== null &&
+            currentUser.investmentRate !== undefined
+                ? Number(currentUser.investmentRate)
+                : null;
+
+        if (this.editForm.investmentRate !== currentInvestmentRate) {
+            if (this.editForm.investmentRate !== null) {
+                payload.investmentRate = this.editForm.investmentRate;
+            }
+        }
+
+        return Object.keys(payload).length > 0 ? payload : null;
     }
 
     private _setEditForm(user: Client | null): void {
@@ -194,5 +238,9 @@ export class DetailClientComponent implements OnInit, OnDestroy {
                 this.user = user;
                 this._setEditForm(user);
             });
+    }
+
+    public refreshUserDetail(): void {
+        this._refreshUserDetail();
     }
 }

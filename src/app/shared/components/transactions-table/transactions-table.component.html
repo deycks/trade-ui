@@ -24,6 +24,9 @@
                     <option value="WITHDRAWAL">Retiro</option>
                     <option value="YIELD">Rendimiento</option>
                     <option value="ADJUSTMENT">Ajuste</option>
+                    <option value="TRANSFER:PENDING">Transferencia pendiente</option>
+                    <option value="TRANSFER:APPROVED">Transferencia aprobada</option>
+                    <option value="TRANSFER:REJECTED">Transferencia rechazada</option>
                 </select>
             </div>
             <button (click)="exportTransactions()" [disabled]="transactions.length === 0"
@@ -66,8 +69,24 @@
                 {{ t.description || '—' }}
             </div>
 
-            <div class="mt-2 text-xs text-gray-500">
-                Tipo: {{ t.type | transactionType }}
+            <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+                <div>
+                    <span>Tipo:</span> <span [innerHTML]="t.type | transactionType:t.status"></span>
+                </div>
+                <ng-container *ngIf="isAdmin() && t.type == 'TRANSFER'  && t.status == 'PENDING'">
+                    <div class="relative group">
+                        <button class="inline-flex items-center justify-center p-1 rounded hover:bg-gray-100"
+                            aria-label="Ver detalle" matTooltip="Ver detalle" matTooltipPosition="above"
+                            (click)="openDetailModal(t)">
+                            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <ellipse cx="12" cy="12" rx="9" ry="6" stroke="currentColor" stroke-width="2"
+                                    fill="none" />
+                                <circle cx="12" cy="12" r="2" fill="currentColor" />
+                            </svg>
+                        </button>
+                    </div>
+                </ng-container>
             </div>
         </div>
         }
@@ -75,7 +94,7 @@
 
     <!-- Table desktop -->
     <div class="hidden md:block w-full">
-        <div class="overflow-x-auto bg-white rounded-lg shadow w-full">
+        <div class="bg-white rounded-lg shadow w-full">
             <table mat-table [dataSource]="filteredTransactions" class="w-full">
                 <ng-container matColumnDef="date">
                     <th mat-header-cell *matHeaderCellDef class="px-6 py-3">
@@ -91,9 +110,10 @@
                         Tipo
                     </th>
                     <td mat-cell *matCellDef="let t" class="px-6 py-3 text-sm text-gray-700">
-                        {{ t.type | transactionType }}
+                        <span [innerHTML]="t.type | transactionType:t.status"></span>
                     </td>
                 </ng-container>
+
 
                 <ng-container matColumnDef="description">
                     <th mat-header-cell *matHeaderCellDef class="px-6 py-3">
@@ -104,6 +124,28 @@
                     </td>
                 </ng-container>
 
+
+                <ng-container matColumnDef="view">
+                    <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-center">
+                        <!-- Ícono de visualización -->
+                    </th>
+                    <td mat-cell *matCellDef="let t" class="px-6 py-3 text-center">
+                        <ng-container *ngIf="isAdmin() && t.type == 'TRANSFER' && t.status == 'PENDING'">
+                            <div class="relative group">
+                                <button class="inline-flex items-center justify-center p-1 rounded hover:bg-gray-100"
+                                    aria-label="Ver detalle" matTooltip="Ver detalle" matTooltipPosition="above"
+                                    (click)="openDetailModal(t)">
+                                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <ellipse cx="12" cy="12" rx="9" ry="6" stroke="currentColor" stroke-width="2"
+                                            fill="none" />
+                                        <circle cx="12" cy="12" r="2" fill="currentColor" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </ng-container>
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="amount">
                     <th mat-header-cell *matHeaderCellDef class="px-6 py-3 text-center">
                         Monto

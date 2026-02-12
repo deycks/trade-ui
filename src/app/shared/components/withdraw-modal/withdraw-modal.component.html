@@ -1,0 +1,66 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold">Retirar dinero</h2>
+            <button (click)="onClose()" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Monto</label>
+                <input type="number" formControlName="amount" min="1" step="0.01"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" />
+                <div *ngIf="form.get('amount')?.invalid && form.get('amount')?.touched"
+                    class="text-xs text-red-500 mt-1">
+                    <span *ngIf="form.get('amount')?.errors?.['required']">El monto es requerido.</span>
+                    <span *ngIf="form.get('amount')?.errors?.['min']">Debe ser mayor a 0.</span>
+                    <span *ngIf="form.get('amount')?.errors?.['pattern']">Formato inválido (máx 2 decimales).</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">CLABE bancaria</label>
+                <input type="text" formControlName="bankClabe" maxlength="18"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" />
+                <div *ngIf="form.get('bankClabe')?.invalid && form.get('bankClabe')?.touched"
+                    class="text-xs text-red-500 mt-1">
+                    <span *ngIf="form.get('bankClabe')?.errors?.['required']">La CLABE es requerida.</span>
+                    <span *ngIf="form.get('bankClabe')?.errors?.['pattern']">Debe tener 18 dígitos numéricos.</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Nombre del banco</label>
+                <input type="text" formControlName="bankName"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" />
+                <div *ngIf="form.get('bankName')?.invalid && form.get('bankName')?.touched"
+                    class="text-xs text-red-500 mt-1">
+                    <span *ngIf="form.get('bankName')?.errors?.['required']">El nombre del banco es requerido.</span>
+                    <span *ngIf="form.get('bankName')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+                    <span *ngIf="form.get('bankName')?.errors?.['maxlength']">Máximo 50 caracteres.</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Beneficiario</label>
+                <input type="text" formControlName="beneficiary"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" />
+                <div *ngIf="form.get('beneficiary')?.invalid && form.get('beneficiary')?.touched"
+                    class="text-xs text-red-500 mt-1">
+                    <span *ngIf="form.get('beneficiary')?.errors?.['required']">El nombre del beneficiario es
+                        requerido.</span>
+                    <span *ngIf="form.get('beneficiary')?.errors?.['minlength']">Mínimo 3 caracteres.</span>
+                    <span *ngIf="form.get('beneficiary')?.errors?.['maxlength']">Máximo 50 caracteres.</span>
+                </div>
+            </div>
+            <div class="mb-2 flex items-center">
+                <input type="checkbox" id="rememberBankDetails" [checked]="rememberBankDetails"
+                    (change)="rememberBankDetails = $event.target.checked"
+                    class="mr-2 accent-indigo-600 border-indigo-600 focus:ring-indigo-500">
+                <label for="rememberBankDetails" class="text-sm select-none cursor-pointer">Recordar mis datos bancarios
+                    para la próxima vez</label>
+            </div>
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" (click)="onClose()" class="px-4 py-2 rounded-lg border">Cancelar</button>
+                <button type="submit" [disabled]="form.invalid"
+                    class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold disabled:opacity-50">Retirar</button>
+            </div>
+        </form>
+    </div>
+</div>

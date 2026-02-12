@@ -42,6 +42,7 @@ export class ClientAdminComponent implements OnInit, OnDestroy {
         'balance',
         'tasa',
         'registro',
+        'pendingTransfers',
         'acciones',
     ];
 

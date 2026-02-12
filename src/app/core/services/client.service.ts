@@ -6,6 +6,7 @@ import { catchError, retry } from 'rxjs/operators';
 import { ResponseDashboardClient } from '../interfaces/dashboardClient.interface';
 import { Transaction } from '../interfaces/transaction.interface';
 import { Client } from '../interfaces/user.interface';
+import { Transfer } from './../interfaces/transfer.interface';
 import { CommonFunctionsService } from './commonFunctions';
 
 @Injectable({
@@ -74,6 +75,17 @@ export class ClientService {
                         'updateAdminUserClient',
                         undefined
                     )
+                )
+            );
+    }
+
+    transfer(payload: Transfer): Observable<any> {
+        return this._httpClient
+            .post<any>(`${environment.apiUrl}/client/transfer`, payload)
+            .pipe(
+                retry(2),
+                catchError(
+                    this._service.handleError<any>('transfer', undefined)
                 )
             );
     }

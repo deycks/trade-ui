@@ -7,6 +7,7 @@ import {
     OnInit,
     ViewEncapsulation,
 } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +18,7 @@ import { ResponseDashboardClient } from 'app/core/interfaces/dashboardClient.int
 import { ClientService } from 'app/core/services/client.service';
 import { CommonFunctionsService } from 'app/core/services/commonFunctions';
 import { LoadingComponent } from 'app/shared/components/loading/loading.component';
+import { WithdrawModalComponent } from 'app/shared/components/withdraw-modal/withdraw-modal.component';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -34,18 +36,22 @@ import { Subject, takeUntil } from 'rxjs';
         MatTooltipModule,
         LoadingComponent,
         CommonModule,
+        ReactiveFormsModule,
+        WithdrawModalComponent,
     ],
 })
 export class DashboardClientComponent implements OnInit, OnDestroy {
-    chartVisitors: ApexOptions;
-    chartConversions: ApexOptions;
-    chartImpressions: ApexOptions;
-    chartVisits: ApexOptions;
-    chartVisitorsVsPageViews: ApexOptions;
-    chartNewVsReturning: ApexOptions;
-    chartGender: ApexOptions;
-    chartAge: ApexOptions;
-    chartLanguage: ApexOptions;
+    successMessage: string | null = null;
+    showWithdrawModal = false;
+    chartVisitors: ApexOptions = {};
+    chartConversions: ApexOptions = {};
+    chartImpressions: ApexOptions = {};
+    chartVisits: ApexOptions = {};
+    chartVisitorsVsPageViews: ApexOptions = {};
+    chartNewVsReturning: ApexOptions = {};
+    chartGender: ApexOptions = {};
+    chartAge: ApexOptions = {};
+    chartLanguage: ApexOptions = {};
     data: any;
     dataDashboard?: ResponseDashboardClient;
     isLoading = true;
@@ -113,6 +119,33 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
         return pct >= 0
             ? 'heroicons_solid:arrow-up-circle'
             : 'heroicons_solid:arrow-down-circle';
+    }
+
+    onWithdrawMoney(): void {
+        this.showWithdrawModal = true;
+    }
+
+    handleWithdrawModalClose(): void {
+        this.showWithdrawModal = false;
+    }
+
+    handleWithdrawSubmit(payload: any): void {
+        this._clientService.transfer(payload).subscribe({
+            next: () => {
+                this.showWithdrawModal = false;
+                this.successMessage =
+                    'Su solicitud de retiro ha sido enviada a un ejecutivo y está en proceso de validación. Un encargado se pondrá en contacto con usted para confirmar la transacción.';
+                setTimeout(() => {
+                    this.successMessage = null;
+                    this._cdr.markForCheck();
+                }, 8000);
+                this._cdr.markForCheck();
+            },
+            error: (err) => {
+                // Manejo de error
+                console.error('Error en la transferencia:', err);
+            },
+        });
     }
 
     getTrendMiniIcon(pct: number): string {
@@ -216,9 +249,15 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
         // 2. Filter out the ones that doesn't have cross reference so we only left with the ones that use the 'url(#id)' syntax
         // 3. Insert the 'currentURL' at the front of the 'fill' attribute value
         Array.from(element.querySelectorAll('*[fill]'))
-            .filter((el) => el.getAttribute('fill').indexOf('url(') !== -1)
+            .filter((el) => {
+                const fill = el.getAttribute('fill');
+                return !!fill && fill.indexOf('url(') !== -1;
+            })
             .forEach((el) => {
                 const attrVal = el.getAttribute('fill');
+                if (!attrVal) {
+                    return;
+                }
                 el.setAttribute(
                     'fill',
                     `url(${currentURL}${attrVal.slice(attrVal.indexOf('#'))}`
@@ -232,6 +271,10 @@ export class DashboardClientComponent implements OnInit, OnDestroy {
      * @private
      */
     private _prepareChartData(): void {
+        if (!this.dataDashboard?.chart?.series) {
+            return;
+        }
+
         const _key: string = 'balance';
         const balanceAndInvestedCapital = this.dataDashboard.chart.series.slice(
             0,

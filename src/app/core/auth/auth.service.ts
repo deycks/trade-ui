@@ -77,6 +77,10 @@ export class AuthService {
                 switchMap(() => this._userService.get()),
                 tap((user) => {
                     this._userService.user = user;
+                    // Guardar el id único del usuario autenticado para uso en localStorage
+                    if (user && user.id) {
+                        localStorage.setItem('currentUserId', user.id);
+                    }
                 }),
                 catchError((err) => {
                     // rollback
@@ -110,7 +114,7 @@ export class AuthService {
     /**
      * Sign out
      */
-    signOut(): Observable<any> {
+    public signOut(): Observable<any> {
         try {
             const headers = this.accessToken
                 ? new HttpHeaders({
@@ -127,16 +131,19 @@ export class AuthService {
                 .pipe(
                     tap(() => {
                         localStorage.removeItem('accessToken');
+                        localStorage.removeItem('currentUserId');
                         this._authenticated = false;
                     }),
                     catchError(() => {
                         localStorage.removeItem('accessToken');
+                        localStorage.removeItem('currentUserId');
                         this._authenticated = false;
                         return of(true);
                     })
                 );
         } catch (error) {
             console.log('Error during sign out:', error);
+            return of(true);
         }
     }
 

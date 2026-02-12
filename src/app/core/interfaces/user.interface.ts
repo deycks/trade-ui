@@ -21,4 +21,6 @@ export interface Client extends User {
     transactions: Transaction[];
     auditLogs: any[];
     investmentRate: string | number;
+    pendingTransfersCount?: number;
+    hasPendingTransfers?: boolean;
 }
