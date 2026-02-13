@@ -37,14 +37,14 @@
             <form class="mt-8" [formGroup]="signInForm" #signInNgForm="ngForm">
                 <!-- Email field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Correo electrónico</mat-label>
+                    <mat-label>Correo electrónico o número de teléfono</mat-label>
                     <input id="email" matInput [formControlName]="'email'" autocomplete="username" />
                     @if (signInForm.get('email').hasError('required')) {
-                    <mat-error> El correo es requerido</mat-error>
+                    <mat-error> El correo electrónico o teléfono es requerido</mat-error>
                     }
-                    @if (signInForm.get('email').hasError('email')) {
-                    <mat-error>
-                        Por favor ingrese una dirección de correo electrónico válida
+                    @if (signInForm.get('email').hasError('emailOrPhone')) {
+                    <mat-error class="mb-3">
+                        Por favor ingrese un correo electrónico válido o un número de teléfono válido
                     </mat-error>
                     }
                 </mat-form-field>

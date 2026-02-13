@@ -1,20 +1,14 @@
-import {
-    Component,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-    ViewEncapsulation,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import {
     AbstractControl,
     FormsModule,
-    NgForm,
     ReactiveFormsModule,
     UntypedFormBuilder,
     UntypedFormGroup,
     Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,18 +37,19 @@ import { PortadaBienvenidaComponent } from '../../../shared/components/portada-b
         MatIconModule,
         MatCheckboxModule,
         MatProgressSpinnerModule,
+        MatButtonToggleModule,
         PortadaBienvenidaComponent,
     ],
 })
 export class AuthSignUpComponent implements OnInit, OnDestroy {
-    @ViewChild('signUpNgForm') signUpNgForm: NgForm;
+    // ...existing code...
 
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
         message: '',
     };
 
-    signUpForm: UntypedFormGroup;
+    signUpForm!: UntypedFormGroup;
     showAlert = false;
 
     passwordStrength = {
@@ -124,6 +119,8 @@ export class AuthSignUpComponent implements OnInit, OnDestroy {
 
                 // Checkbox
                 agreements: [false, [Validators.requiredTrue]],
+                // Selector de método de registro
+                registrationMethod: ['email'],
             },
             { validators: [this._passwordsMatchValidator] }
         );
@@ -136,6 +133,20 @@ export class AuthSignUpComponent implements OnInit, OnDestroy {
             .subscribe((value) =>
                 this._updatePasswordStrength((value ?? '').toString())
             );
+
+        // registrationMethod ya está incluido en el FormGroup
+
+        // Suscribirse a cambios y actualizar validaciones
+        this.signUpForm
+            .get('registrationMethod')!
+            .valueChanges.subscribe((method) => {
+                this._updateRegistrationValidators(method);
+            });
+
+        // Inicializar validaciones
+        this._updateRegistrationValidators(
+            this.signUpForm.get('registrationMethod')!.value
+        );
     }
 
     /** Helper para template: c('name').hasError(...) */
@@ -215,6 +226,28 @@ export class AuthSignUpComponent implements OnInit, OnDestroy {
         };
     }
 
+    private _updateRegistrationValidators(method: 'email' | 'phone'): void {
+        const emailControl = this.signUpForm.get('email');
+        const phoneControl = this.signUpForm.get('phone');
+
+        if (method === 'email') {
+            emailControl?.setValidators([
+                Validators.required,
+                Validators.email,
+            ]);
+            phoneControl?.clearValidators();
+        } else {
+            phoneControl?.setValidators([
+                Validators.required,
+                Validators.pattern(/^\+?\d{10,15}$/),
+            ]);
+            emailControl?.clearValidators();
+        }
+
+        emailControl?.updateValueAndValidity();
+        phoneControl?.updateValueAndValidity();
+    }
+
     ngOnDestroy(): void {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -233,15 +266,20 @@ export class AuthSignUpComponent implements OnInit, OnDestroy {
 
         // Payload normalizado (CURP/RFC mayúsculas, trims)
         const v = this.signUpForm.getRawValue();
-        const payload = {
+        let payload: any = {
             password: (v.password ?? '').trim(),
-            name: (v.name ?? '').trim(),
-            email: (v.email ?? '').trim(),
-            phone: (v.phone ?? '').trim(),
-            address: (v.address ?? '').trim(),
-            curp: (v.curp ?? '').toUpperCase().trim(),
-            rfc: (v.rfc ?? '').toUpperCase().trim(),
         };
+        // Solo enviar email o phone según método
+        if (v.registrationMethod === 'email') {
+            payload.email = (v.email ?? '').trim();
+        } else {
+            payload.phone = (v.phone ?? '').trim();
+        }
+        // Campos adicionales
+        payload.name = (v.name ?? '').trim();
+        payload.address = (v.address ?? '').trim();
+        payload.curp = (v.curp ?? '').toUpperCase().trim();
+        payload.rfc = (v.rfc ?? '').toUpperCase().trim();
 
         this._authService.signUp(payload).subscribe(
             () => {
@@ -249,7 +287,7 @@ export class AuthSignUpComponent implements OnInit, OnDestroy {
             },
             () => {
                 this.signUpForm.enable();
-                this.signUpNgForm.resetForm();
+                this.signUpForm.reset();
 
                 this.alert = {
                     type: 'error',

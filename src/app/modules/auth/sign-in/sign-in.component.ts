@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
+    AbstractControl,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
@@ -39,13 +40,13 @@ import { PortadaBienvenidaComponent } from '../../../shared/components/portada-b
     ],
 })
 export class AuthSignInComponent implements OnInit {
-    @ViewChild('signInNgForm') signInNgForm: NgForm;
+    @ViewChild('signInNgForm') signInNgForm!: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
         type: 'success',
         message: '',
     };
-    signInForm: UntypedFormGroup;
+    signInForm!: UntypedFormGroup;
     showAlert: boolean = false;
 
     private readonly _rememberEmailKey = 'auth.rememberEmail';
@@ -68,9 +69,15 @@ export class AuthSignInComponent implements OnInit {
      * On init
      */
     ngOnInit(): void {
-        // Create the form
+        // Create the form with custom validator for email or phone
         this.signInForm = this._formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
+            email: [
+                '',
+                [
+                    Validators.required,
+                    AuthSignInComponent.emailOrPhoneValidator,
+                ],
+            ],
             password: ['', Validators.required],
             rememberMe: [''],
         });
@@ -82,6 +89,24 @@ export class AuthSignInComponent implements OnInit {
                 rememberMe: true,
             });
         }
+    }
+
+    /**
+     * Custom validator to accept email or phone number
+     */
+    static emailOrPhoneValidator(
+        control: AbstractControl
+    ): { [key: string]: any } | null {
+        const value = control.value;
+        if (!value) return null;
+        // Email regex (simple)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Phone regex: accepts +, digits, spaces, parentheses, hyphens
+        const phoneRegex = /^\+?[0-9\s\-()]{7,}$/;
+        if (emailRegex.test(value) || phoneRegex.test(value)) {
+            return null;
+        }
+        return { emailOrPhone: true };
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -96,6 +121,7 @@ export class AuthSignInComponent implements OnInit {
         if (this.signInForm.invalid) {
             return;
         }
+        console.log(this.signInForm);
 
         // Disable the form
         this.signInForm.disable();
@@ -104,14 +130,25 @@ export class AuthSignInComponent implements OnInit {
         this.showAlert = false;
 
         // Sign in
-        const { rememberMe, ...credentials } = this.signInForm.value;
-        this._authService.signIn(credentials).subscribe(
+        const { rememberMe, email, password } = this.signInForm.value;
+        // Email regex (simple)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let payload: any = { password: (password ?? '').trim() };
+        if (emailRegex.test(email)) {
+            payload.email = (email ?? '').trim();
+        } else {
+            // Preservar el signo + si está presente
+            let phoneValue = (email ?? '').trim();
+            if (phoneValue.startsWith('+')) {
+                payload.phone = '+' + phoneValue.slice(1).replace(/[^0-9]/g, '');
+            } else {
+                payload.phone = phoneValue.replace(/[^0-9]/g, '');
+            }
+        }
+        this._authService.signIn(payload).subscribe(
             () => {
-                if (rememberMe) {
-                    localStorage.setItem(
-                        this._rememberEmailKey,
-                        credentials.email
-                    );
+                if (rememberMe && payload.email) {
+                    localStorage.setItem(this._rememberEmailKey, payload.email);
                 } else {
                     localStorage.removeItem(this._rememberEmailKey);
                 }
@@ -131,7 +168,7 @@ export class AuthSignInComponent implements OnInit {
                 this.alert = {
                     type: 'error',
                     message:
-                        'El correo electrónico o la contraseña son incorrectos',
+                        'El correo electrónico, teléfono o la contraseña son incorrectos',
                 };
 
                 // Show the alert

@@ -1,16 +1,28 @@
 <div class="flex min-w-0 flex-auto flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
     <div
         class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow md:flex md:h-full md:w-1/2 md:items-center md:justify-end md:rounded-none md:p-16 md:shadow-none">
-        <div class="mx-auto w-full max-w-3xl sm:mx-0 sm:w-full">
+        <div class="mx-auto w-full max-w-3xl sm:mx-0 sm:w-full ">
             <!-- Title -->
             <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
                 Crear cuenta
+                <div class="mt-2 text-lg font-normal text-gray-600">
+                    Puedes registrarte con correo electrónico o número de teléfono.
+                </div>
             </div>
-            <div class="mt-0.5 flex items-baseline font-medium">
-                <div>¿Ya tienes una cuenta?</div>
-                <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/iniciar-sesion']">
-                    Iniciar sesión
-                </a>
+            <div class="mt-0.5 font-medium flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4">
+                <form class="flex items-center justify-center" [formGroup]="signUpForm">
+                    <mat-button-toggle-group formControlName="registrationMethod"
+                        class="mt-3 sm:mt-0 flex flex-row space-x-4" aria-label="Método de registro">
+                        <mat-button-toggle value="email">Correo electrónico</mat-button-toggle>
+                        <mat-button-toggle value="phone">Número de teléfono</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </form>
+                <div class="flex gap-2 items-center justify-center">
+                    <div>¿Ya tienes una cuenta?</div>
+                    <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/iniciar-sesion']">
+                        Iniciar sesión
+                    </a>
+                </div>
             </div>
 
             <!-- Alert -->
@@ -25,6 +37,8 @@
             <form class="mt-8" [formGroup]="signUpForm" #signUpNgForm="ngForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-4">
+                        <!-- Selector movido arriba -->
+
                         <!-- Nombre completo -->
                         <mat-form-field class="w-full">
                             <mat-label class="font-semibold">Nombre completo</mat-label>
@@ -119,7 +133,7 @@
                     <div class="space-y-4">
                         <!-- Teléfono -->
                         <mat-form-field class="w-full">
-                            <mat-label>Teléfono</mat-label>
+                            <mat-label>Número de teléfono</mat-label>
                             <input id="phone" matInput [formControlName]="'phone'" inputmode="tel" autocomplete="tel" />
                             @if (c('phone').hasError('minlength')) {
                             <mat-error>El teléfono debe tener al menos 10 caracteres.</mat-error>
@@ -167,14 +181,19 @@
                 </div>
 
                 <!-- Aceptación -->
+
                 <div class="mt-1.5 inline-flex w-full items-end">
                     <mat-checkbox class="-ml-2" [color]="'primary'" [formControlName]="'agreements'">
                         <span>Acepto los</span>
                         <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Términos</a>
                         <span> y el</span>
-                        <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Aviso de Privacidad</a>
+                        <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['./']">Aviso de
+                            Privacidad</a>
                     </mat-checkbox>
                 </div>
+
+
+
                 @if (c('agreements').hasError('required') && signUpForm.dirty) {
                 <div class="mt-2 text-sm text-red-400">Debes aceptar los términos para continuar.</div>
                 }
